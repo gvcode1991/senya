@@ -54,13 +54,40 @@ export async function verifyEmailConnection() {
     return { ok: false, configured: false, reason: "missing-resend", apiKey: getSafeApiKeyInfo() };
   }
 
-  return {
-    ok: true,
-    configured: true,
-    provider: "resend",
-    message: "Resend esta configurado. El envio real se valida al crear la cuenta.",
-    apiKey: getSafeApiKeyInfo(),
-  };
+  try {
+    const response = await fetch(`${resendApiUrl}/domains`, {
+      headers: getResendHeaders(),
+      signal: AbortSignal.timeout(15000),
+    });
+    const data = await readResendResponse(response);
+
+    if (!response.ok) {
+      return {
+        ok: false,
+        configured: true,
+        provider: "resend",
+        status: response.status,
+        message: data.message || data.error || "Resend no acepto la API key.",
+        apiKey: getSafeApiKeyInfo(),
+      };
+    }
+
+    return {
+      ok: true,
+      configured: true,
+      provider: "resend",
+      domains: Array.isArray(data.data) ? data.data.length : undefined,
+      apiKey: getSafeApiKeyInfo(),
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      configured: true,
+      provider: "resend",
+      message: error.message,
+      apiKey: getSafeApiKeyInfo(),
+    };
+  }
 }
 
 export async function sendAccountConfirmationEmail(user, token) {

@@ -3,7 +3,7 @@
 }
 
 export function getStoreName() {
-  return process.env.STORE_NAME || "Demo Store";
+  return process.env.STORE_NAME || "Senya";
 }
 
 export function getServiceName() {

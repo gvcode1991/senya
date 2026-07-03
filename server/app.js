@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 
 import { createOrder, listOrders } from "./services/ordersService.js";
 import { createProduct, decrementProductStock, deleteProduct, getAvailableStock, getProductById, listProducts, updateProduct } from "./services/productsService.js";
-import { uploadProductImage } from "./services/cloudinaryService.js";
+import { uploadProductImage, isCloudinaryConfigured, verifyCloudinaryConnection } from "./services/cloudinaryService.js";
 import { sendAccountConfirmationEmail, isEmailConfigured, verifyEmailConnection } from "./services/emailService.js";
 import { createAdminSessionToken, createSessionToken, verifySessionToken } from "./services/authService.js";
 import { attachPurchaseToUser, authenticateUser, confirmUserEmail, deletePendingUser, getUserByEmail, isVerifiedUserEmail, listUsers, registerUser, setFavorite, updateUserPreferences, updateUserRole } from "./services/usersService.js";
@@ -51,16 +51,32 @@ export function createApp() {
     const health = {
       ok: true,
       service: getServiceName(),
+      mongoConfigured: Boolean(process.env.MONGODB_URI),
+      cloudinaryConfigured: isCloudinaryConfigured(),
+      emailConfigured: isEmailConfigured(),
     };
 
     if (!isProduction) {
-      health.mongoConfigured = Boolean(process.env.MONGODB_URI);
-      health.cloudinaryConfigured = Boolean(process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET);
-      health.emailConfigured = isEmailConfigured();
       health.mongoState = mongoose.connection.readyState;
     }
 
     response.json(health);
+  });
+
+  app.get("/api/health/services", async (_request, response) => {
+    const health = {
+      ok: true,
+      service: getServiceName(),
+      mongo: {
+        configured: Boolean(process.env.MONGODB_URI),
+        state: mongoose.connection.readyState,
+      },
+      cloudinary: await verifyCloudinaryConnection(),
+      email: await verifyEmailConnection(),
+    };
+
+    health.ok = health.mongo.configured && health.cloudinary.ok && health.email.ok;
+    response.status(health.ok ? 200 : 503).json(health);
   });
 
   app.get("/api/health/email", requireAdmin, async (_request, response) => {

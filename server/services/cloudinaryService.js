@@ -8,6 +8,28 @@ export function isCloudinaryConfigured() {
   return Boolean(process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET);
 }
 
+function configureCloudinary() {
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
+}
+
+export async function verifyCloudinaryConnection() {
+  if (!isCloudinaryConfigured()) {
+    return { ok: false, configured: false, reason: "missing-cloudinary" };
+  }
+
+  try {
+    configureCloudinary();
+    const result = await cloudinary.api.ping();
+    return { ok: result.status === "ok", configured: true, provider: "cloudinary", status: result.status };
+  } catch (error) {
+    return { ok: false, configured: true, provider: "cloudinary", message: error.message };
+  }
+}
+
 export async function uploadProductImage(file) {
   if (!isCloudinaryConfigured()) {
     throw new Error("Cloudinary no esta configurado.");
@@ -17,11 +39,7 @@ export async function uploadProductImage(file) {
     throw new Error("No recibimos una imagen valida.");
   }
 
-  cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
-  });
+  configureCloudinary();
 
   const dataUri = `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
   const result = await cloudinary.uploader.upload(dataUri, {
