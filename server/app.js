@@ -65,7 +65,16 @@ export function createApp() {
   });
 
   app.get("/api/health/services", async (_request, response) => {
-    const mongoConnection = await connectToDatabase();
+    let mongoConnection;
+    let mongoError = null;
+
+    try {
+      mongoConnection = await connectToDatabase();
+    } catch (error) {
+      mongoConnection = { connected: false };
+      mongoError = error;
+    }
+
     const health = {
       ok: true,
       service: getServiceName(),
@@ -73,6 +82,7 @@ export function createApp() {
         configured: Boolean(process.env.MONGODB_URI),
         connected: mongoConnection.connected,
         state: mongoose.connection.readyState,
+        message: mongoError ? mongoError.message : undefined,
       },
       cloudinary: await verifyCloudinaryConnection(),
       email: await verifyEmailConnection(),
