@@ -24,9 +24,21 @@ export async function verifyCloudinaryConnection() {
   try {
     configureCloudinary();
     const result = await cloudinary.api.ping();
-    return { ok: result.status === "ok", configured: true, provider: "cloudinary", status: result.status };
+    const status = result?.status || result?.message || "unknown";
+    return {
+      ok: status === "ok",
+      configured: true,
+      provider: "cloudinary",
+      status,
+    };
   } catch (error) {
-    return { ok: false, configured: true, provider: "cloudinary", message: error.message };
+    return {
+      ok: false,
+      configured: true,
+      provider: "cloudinary",
+      status: error.http_code || error.status || undefined,
+      message: error.message || error.error?.message || "Cloudinary no acepto las credenciales.",
+    };
   }
 }
 

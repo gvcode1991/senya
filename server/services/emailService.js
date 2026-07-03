@@ -60,6 +60,18 @@ export async function verifyEmailConnection() {
       signal: AbortSignal.timeout(15000),
     });
     const data = await readResendResponse(response);
+    const message = data.message || data.error || "";
+
+    if (response.status === 401 && message.toLowerCase().includes("only send emails")) {
+      return {
+        ok: true,
+        configured: true,
+        provider: "resend",
+        mode: "send-only",
+        message,
+        apiKey: getSafeApiKeyInfo(),
+      };
+    }
 
     if (!response.ok) {
       return {
@@ -67,7 +79,7 @@ export async function verifyEmailConnection() {
         configured: true,
         provider: "resend",
         status: response.status,
-        message: data.message || data.error || "Resend no acepto la API key.",
+        message: message || "Resend no acepto la API key.",
         apiKey: getSafeApiKeyInfo(),
       };
     }

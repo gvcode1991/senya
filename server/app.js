@@ -13,6 +13,7 @@ import { createAdminSessionToken, createSessionToken, verifySessionToken } from 
 import { attachPurchaseToUser, authenticateUser, confirmUserEmail, deletePendingUser, getUserByEmail, isVerifiedUserEmail, listUsers, registerUser, setFavorite, updateUserPreferences, updateUserRole } from "./services/usersService.js";
 import { notifyAdminOrder } from "./services/whatsappService.js";
 import { getServiceName, getStoreName } from "./config/storeConfig.js";
+import { connectToDatabase } from "./db/mongo.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -64,18 +65,20 @@ export function createApp() {
   });
 
   app.get("/api/health/services", async (_request, response) => {
+    const mongoConnection = await connectToDatabase();
     const health = {
       ok: true,
       service: getServiceName(),
       mongo: {
         configured: Boolean(process.env.MONGODB_URI),
+        connected: mongoConnection.connected,
         state: mongoose.connection.readyState,
       },
       cloudinary: await verifyCloudinaryConnection(),
       email: await verifyEmailConnection(),
     };
 
-    health.ok = health.mongo.configured && health.cloudinary.ok && health.email.ok;
+    health.ok = health.mongo.connected && health.cloudinary.ok && health.email.ok;
     response.status(health.ok ? 200 : 503).json(health);
   });
 
