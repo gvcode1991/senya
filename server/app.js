@@ -259,8 +259,16 @@ export function createApp() {
         response.status(201).json({ user: publicUser, email, token: createSessionToken(publicUser) });
       } catch (error) {
         console.warn(`No pudimos enviar el email de activacion: ${error.message}`);
-        await deletePendingUser(user.email);
-        response.status(502).json({ message: getEmailFailureMessage(error) });
+        const { confirmationToken, ...publicUser } = user;
+        response.status(201).json({
+          user: publicUser,
+          email: {
+            sent: false,
+            reason: "email-failed",
+            message: getEmailFailureMessage(error),
+          },
+          token: createSessionToken(publicUser),
+        });
       }
     } catch (error) {
       next(error);
