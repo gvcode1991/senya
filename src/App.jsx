@@ -143,7 +143,9 @@ function AppContent() {
   const {
     accountLookup,
     loadAccount: loadUserAccount,
+    logoutUser,
     saveAccountPreferences,
+    setUserStatus,
     setUserAccount,
     submitUser,
     toggleFavorite,
@@ -178,6 +180,23 @@ function AppContent() {
   function loadAccount(event) {
     return loadUserAccount(event, syncCheckoutEmail);
   }
+
+  useEffect(() => {
+    if (currentPath !== "/cuenta") return;
+    const searchParams = new URLSearchParams(window.location.search);
+    if (searchParams.get("confirmed") !== "1") return;
+    const confirmedEmail = searchParams.get("email") || "";
+
+    if (confirmedEmail) {
+      updateAccountLookup("email", confirmedEmail);
+    }
+
+    setUserStatus({
+      state: "success",
+      message: "Cuenta activada. Inicia sesion para entrar a tu panel.",
+    });
+    window.history.replaceState({}, "", "/cuenta");
+  }, [currentPath, setUserStatus, updateAccountLookup]);
 
   const selectedProduct = useMemo(() => {
     const match = currentPath.match(/^\/producto\/([^/]+)/);
@@ -365,6 +384,7 @@ function AppContent() {
             accountLookup={accountLookup}
             isRegisterRoute={isRegisterRoute}
             loadAccount={loadAccount}
+            logoutUser={logoutUser}
             saveAccountPreferences={saveAccountPreferences}
             submitUser={submitUser}
             updateAccountLookup={updateAccountLookup}

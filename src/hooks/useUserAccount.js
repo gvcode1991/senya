@@ -5,6 +5,7 @@ import { loginUser, registerUser, updateFavorite, updatePreferences } from "../s
 export function useUserAccount({ navigateTo }) {
   const {
     accountLookup,
+    logoutUser,
     setAccountLookup,
     setUserAccount,
     setUserForm,
@@ -122,8 +123,10 @@ export function useUserAccount({ navigateTo }) {
     accountLookup,
     authHeaders,
     loadAccount,
+    logoutUser,
     saveAccountPreferences,
     setUserAccount,
+    setUserStatus,
     submitUser,
     toggleFavorite,
     updateAccountLookup,

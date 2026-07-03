@@ -12,7 +12,7 @@ import { sendAccountConfirmationEmail, isEmailConfigured, verifyEmailConnection 
 import { createAdminSessionToken, createSessionToken, verifySessionToken } from "./services/authService.js";
 import { attachPurchaseToUser, authenticateUser, confirmUserEmail, deletePendingUser, getUserByEmail, isVerifiedUserEmail, listUsers, registerUser, setFavorite, updateUserPreferences, updateUserRole } from "./services/usersService.js";
 import { notifyAdminOrder } from "./services/whatsappService.js";
-import { getServiceName, getStoreName } from "./config/storeConfig.js";
+import { getPublicAppUrl, getServiceName, getStoreName } from "./config/storeConfig.js";
 import { connectToDatabase } from "./db/mongo.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -299,15 +299,10 @@ export function createApp() {
         return;
       }
 
-      response.send(`
-        <main style="font-family:Arial,sans-serif;min-height:100vh;display:grid;place-items:center;background:#fbf7f2;color:#241913">
-          <section style="max-width:520px;padding:32px;border:1px solid #eaded2;background:white;border-radius:8px;text-align:center">
-            <h1>Cuenta activada</h1>
-            <p>Tu email ${user.email} ya esta confirmado. Ya podes comprar en ${getStoreName()}.</p>
-            <a href="/" style="display:inline-block;margin-top:16px;padding:12px 18px;border-radius:999px;background:#9b7350;color:white;text-decoration:none">Volver a la tienda</a>
-          </section>
-        </main>
-      `);
+      const redirectUrl = new URL("/cuenta", getPublicAppUrl());
+      redirectUrl.searchParams.set("confirmed", "1");
+      redirectUrl.searchParams.set("email", user.email);
+      response.redirect(302, redirectUrl.toString());
     } catch (error) {
       next(error);
     }

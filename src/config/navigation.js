@@ -5,6 +5,7 @@ export const mainNavLinks = [
   { label: "Productos", href: "#productos" },
   { label: "Categorias", href: "#categorias" },
   { label: "Ofertas", href: "#ofertas" },
+  { label: "Registro", path: "/registro" },
   { label: "Nosotros", href: "#nosotros" },
   { label: "Contacto", href: "#contacto" },
 ];

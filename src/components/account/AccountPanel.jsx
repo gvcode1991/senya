@@ -7,6 +7,7 @@ export function AccountPanel({
   accountLookup,
   isRegisterRoute,
   loadAccount,
+  logoutUser,
   saveAccountPreferences,
   submitUser,
   updateAccountLookup,
@@ -73,6 +74,7 @@ export function AccountPanel({
               <strong>{accountContent.account.favoritesLabel}: {(userAccount.favorites || []).length}</strong>
               <strong>{accountContent.account.purchasesLabel}: {(userAccount.purchases || []).length}</strong>
               <OrderList purchases={userAccount.purchases} />
+              <button className="secondary-admin-button account-logout" type="button" onClick={logoutUser}>Cerrar sesion</button>
             </>
           )}
         </div>

@@ -57,7 +57,13 @@ export function Header({
 
       <nav className="main-nav" aria-label="Secciones">
         {mainNavLinks.map((link) => (
-          <a href={link.href} target={link.external ? "_blank" : undefined} rel={link.external ? "noreferrer" : undefined} key={`${link.label}-${link.href}`}>
+          <a
+            href={link.path || link.href}
+            target={link.external ? "_blank" : undefined}
+            rel={link.external ? "noreferrer" : undefined}
+            onClick={link.path ? (event) => { event.preventDefault(); navigateTo(link.path); } : undefined}
+            key={`${link.label}-${link.path || link.href}`}
+          >
             {link.label}
           </a>
         ))}
