@@ -1,0 +1,17 @@
+﻿services:
+  - type: web
+    name: ecommerce-template-api
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: CLIENT_ORIGIN
+        value: https://your-store.onrender.com
+      - key: MONGODB_DB_NAME
+        value: ecommerce-template
+      - key: MONGODB_URI
+        sync: false

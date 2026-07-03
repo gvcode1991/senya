@@ -1,0 +1,27 @@
+{
+  "name": "ecommerce-template",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --configLoader native",
+    "dev:api": "node server/index.js",
+    "build": "vite build --configLoader native",
+    "preview": "vite preview --host 127.0.0.1 --configLoader native",
+    "start": "node server/index.js"
+  },
+  "dependencies": {
+    "cloudinary": "^2.10.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "lucide-react": "^0.468.0",
+    "mongoose": "^9.7.3",
+    "multer": "^2.2.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.7"
+  }
+}
+
