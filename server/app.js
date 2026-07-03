@@ -35,6 +35,23 @@ const upload = multer({
   },
 });
 
+function getRenderRevision() {
+  return process.env.RENDER_GIT_COMMIT || process.env.RENDER_GIT_COMMIT_SHA || process.env.GIT_COMMIT || null;
+}
+
+async function safeServiceCheck(service, check) {
+  try {
+    return await check();
+  } catch (error) {
+    return {
+      ok: false,
+      configured: false,
+      service,
+      message: error.message || "No pudimos verificar el servicio.",
+    };
+  }
+}
+
 export function createApp() {
   const app = express();
 
@@ -52,6 +69,7 @@ export function createApp() {
     const health = {
       ok: true,
       service: getServiceName(),
+      revision: getRenderRevision(),
       mongoConfigured: Boolean(process.env.MONGODB_URI),
       cloudinaryConfigured: isCloudinaryConfigured(),
       emailConfigured: isEmailConfigured(),
@@ -65,27 +83,22 @@ export function createApp() {
   });
 
   app.get("/api/health/services", async (_request, response) => {
-    let mongoConnection;
-    let mongoError = null;
-
-    try {
-      mongoConnection = await connectToDatabase();
-    } catch (error) {
-      mongoConnection = { connected: false };
-      mongoError = error;
-    }
+    const mongo = await safeServiceCheck("mongodb", async () => {
+      const mongoConnection = await connectToDatabase();
+      return {
+        configured: Boolean(process.env.MONGODB_URI),
+        connected: mongoConnection.connected,
+        state: mongoose.connection.readyState,
+      };
+    });
 
     const health = {
       ok: true,
       service: getServiceName(),
-      mongo: {
-        configured: Boolean(process.env.MONGODB_URI),
-        connected: mongoConnection.connected,
-        state: mongoose.connection.readyState,
-        message: mongoError ? mongoError.message : undefined,
-      },
-      cloudinary: await verifyCloudinaryConnection(),
-      email: await verifyEmailConnection(),
+      revision: getRenderRevision(),
+      mongo,
+      cloudinary: await safeServiceCheck("cloudinary", verifyCloudinaryConnection),
+      email: await safeServiceCheck("resend", verifyEmailConnection),
     };
 
     health.ok = health.mongo.connected && health.cloudinary.ok && health.email.ok;
