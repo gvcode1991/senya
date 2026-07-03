@@ -1,5 +1,5 @@
 import React from "react";
-import { Heart, Home, Menu, Search, ShoppingBag, UserRound } from "lucide-react";
+import { Menu, Search, ShoppingBag, UserRound } from "lucide-react";
 
 export function Header({
   cartQuantity,
@@ -37,9 +37,7 @@ export function Header({
         </label>
 
         <div className="header-actions" aria-label="Accesos rapidos">
-          <a href="/cuenta" aria-label={headerActions.favorites} onClick={(event) => { event.preventDefault(); navigateTo("/cuenta"); }}><Heart size={24} /><span>{headerActions.favorites}</span></a>
           <a href="/cuenta" aria-label={headerActions.account} onClick={(event) => { event.preventDefault(); navigateTo("/cuenta"); }}><UserRound size={23} /><span>{headerActions.account}</span></a>
-          <a href="#contacto" aria-label={headerActions.stores}><Home size={23} /><span>{headerActions.stores}</span></a>
           <button className="header-cart" type="button" aria-label="Abrir carrito" onClick={() => setCartOpen(true)}>
             <ShoppingBag size={24} />
             <span>{headerActions.cart}</span>

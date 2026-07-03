@@ -1,35 +1,40 @@
 import { storeInfo } from "./storeConfig";
 
 export const mainNavLinks = [
-  { label: "Coleccion", href: "#productos" },
-  { label: "Camisetas", href: "#productos" },
-  { label: "Conjuntos", href: "#productos" },
-  { label: storeInfo.name, href: "#coleccion" },
+  { label: "Inicio", href: "#inicio" },
+  { label: "Productos", href: "#productos" },
+  { label: "Categorias", href: "#categorias" },
+  { label: "Ofertas", href: "#ofertas" },
+  { label: "Nosotros", href: "#nosotros" },
   { label: "Contacto", href: "#contacto" },
-  { label: "Admin", href: "/admin", external: true },
 ];
 
 export const headerActions = {
-  favorites: "Favoritos",
   account: "Mi cuenta",
-  stores: "Tiendas",
-  cart: "Cesta",
+  cart: "Carrito",
 };
 
 export const mobileMenuLinks = [
-  { label: "Indumentaria", category: "Todos" },
+  { label: "Inicio", path: "/" },
+  { label: "Productos", category: "Todos" },
+  { label: "Ropa", category: "Ropa" },
+  { label: "Zapatillas", category: "Zapatillas" },
   { label: "Accesorios", category: "Accesorios" },
+  { label: "Ofertas", category: "Ofertas" },
   { label: "Registro", path: "/registro" },
   { label: "Mi cuenta", path: "/cuenta" },
 ];
 
 export const footerNavigationLinks = [
-  { label: "Catalogo", href: "#productos" },
-  { label: "Coleccion", href: "#coleccion" },
+  { label: "Inicio", href: "#inicio" },
+  { label: "Productos", href: "#productos" },
+  { label: "Categorias", href: "#categorias" },
+  { label: "Ofertas", href: "#ofertas" },
+  { label: "Nosotros", href: "#nosotros" },
   { label: "Mi cuenta", path: "/cuenta" },
 ];
 
 export const searchPlaceholders = {
-  desktop: "Buscar camisetas, conjuntos, clubes...",
+  desktop: "Buscar ropa, zapatillas, accesorios...",
   mobile: "Buscar productos",
 };

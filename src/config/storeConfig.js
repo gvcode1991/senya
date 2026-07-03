@@ -1,72 +1,74 @@
-﻿import { productFallbackImages } from "./images";
+import { productFallbackImages } from "./images";
 
 export const appVersion = "1.0.0";
 
 export const storageKeys = {
-  cart: "ecommerce-template-cart",
-  userToken: "ecommerce-template-user-token",
-  adminToken: "ecommerce-template-admin-token",
+  cart: "senya-cart",
+  userToken: "senya-user-token",
+  adminToken: "senya-admin-token",
 };
 
 export const storeInfo = {
-  name: "Demo Store",
-  legalName: "Demo Store",
-  slogan: "Products for your everyday store",
-  shortDescription: "A reusable catalog with apparel, accessories and sample products ready to customize.",
-  contactEmail: "sales@example.com",
+  name: "Senya",
+  legalName: "Senya",
+  slogan: "Moda urbana, simple y con estilo",
+  shortDescription: "Descubri ropa, zapatillas y accesorios seleccionados para acompanar tu dia a dia.",
+  contactEmail: "hola@senya.com",
   whatsappFallback: "5490000000000",
   instagramUrl: "https://www.instagram.com/",
   facebookUrl: "https://www.facebook.com/",
-  storeLocationText: "Online store ready for nationwide shipping",
+  storeLocationText: "Tienda online con envios y entregas a coordinar",
 };
 
 export const heroContent = {
-  eyebrow: "Store collection",
+  eyebrow: "Nueva temporada",
   title: storeInfo.slogan,
   description: storeInfo.shortDescription,
-  primaryAction: "View catalog",
-  secondaryAction: `About ${storeInfo.name}`,
+  primaryAction: "Ver productos",
+  secondaryAction: "Ver ofertas",
 };
 
-export const categories = ["Todos", "Apparel", "Accessories", "Featured"];
+export const categories = ["Todos", "Ropa", "Zapatillas", "Accesorios", "Nuevos ingresos", "Ofertas"];
 export const visibleCategoryShortcuts = [
   { label: "Catalogo completo", value: "Todos" },
-  { label: "Apparel essentials", value: "Apparel" },
-  { label: "Accessories", value: "Accessories" },
-  { label: "Featured products", value: "Featured" },
+  { label: "Ropa", value: "Ropa" },
+  { label: "Zapatillas", value: "Zapatillas" },
+  { label: "Accesorios", value: "Accesorios" },
+  { label: "Ofertas", value: "Ofertas" },
 ];
 
 export const showcaseCategories = [
-  { label: "Apparel essentials", value: "Apparel", imageKey: "apparel", featured: true },
-  { label: "Accessories", value: "Accessories", imageKey: "accessories" },
-  { label: "Featured products", value: "Featured", imageKey: "featured" },
+  { label: "Ropa", value: "Ropa", imageKey: "apparel", featured: true },
+  { label: "Zapatillas", value: "Zapatillas", imageKey: "sneakers" },
+  { label: "Accesorios", value: "Accesorios", imageKey: "accessories" },
+  { label: "Nuevos ingresos", value: "Nuevos ingresos", imageKey: "featured" },
 ];
 
 export const introHighlights = [
-  { number: "01", title: "Flexible catalog", text: "Sections ready to adapt to apparel, accessories or any retail category." },
-  { number: "02", title: "Visible stock", text: "Products support sizes, colors, images and availability from the admin panel." },
-  { number: "03", title: "Simple checkout", text: "Cart, customer data and order confirmation are prepared for real stores." },
+  { number: "01", title: "Prendas versatiles", text: "Looks comodos para entrenar, viajar o usar todos los dias." },
+  { number: "02", title: "Stock claro", text: "Cada producto muestra talles, colores y disponibilidad antes de comprar." },
+  { number: "03", title: "Compra simple", text: "Carrito, datos de contacto y confirmacion listos para coordinar tu pedido." },
 ];
 
-export const shippingTickerItems = ["Shipping options available", "Payment methods ready", "Shipping options available", "Payment methods ready"];
+export const shippingTickerItems = ["Envios a coordinar", "Pagos flexibles", "Nuevos ingresos", "Atencion por WhatsApp"];
 
 export const homeCarouselContent = {
-  eyebrow: "New arrivals",
-  title: "Featured products",
-  viewAllText: "View all",
+  eyebrow: "Nuevos ingresos",
+  title: "Productos destacados",
+  viewAllText: "Ver todo",
 };
 
 export const catalogContent = {
-  eyebrow: "Catalog",
-  title: "Products",
+  eyebrow: "Catalogo",
+  title: "Productos",
   emptyMessage: "No encontramos productos con esos filtros.",
 };
 
 export const contactSection = {
-  eyebrow: "Shipping",
-  title: "Orders ready to coordinate",
-  description: "Prepare orders, coordinate delivery and keep customers informed from checkout.",
-  note: "Delivery and pickup texts can be customized from the store configuration.",
+  eyebrow: "Envios",
+  title: "Coordinamos tu pedido",
+  description: "Confirmamos stock, metodo de pago y forma de entrega para que recibas tu compra sin vueltas.",
+  note: "Tambien podes consultar por WhatsApp antes de comprar.",
 };
 
 export const currencyConfig = {
@@ -171,6 +173,7 @@ export const accountContent = {
 export const footerContent = {
   navigationTitle: "Navegacion",
   contactTitle: "Contactanos",
+  description: "Tienda online de ropa, zapatillas y accesorios.",
   copyright: `Copyright ${storeInfo.legalName} - 2026. Todos los derechos reservados.`,
 };
 
@@ -197,9 +200,10 @@ export const adminContent = {
 };
 
 export const fallbackProducts = [
-  { id: "basic-t-shirt", name: "Basic T-shirt", category: "Apparel", tags: ["Basics", "Tops"], description: "Soft everyday t-shirt for a reusable store catalog.", price: 24900, image: productFallbackImages.basicTShirt, badge: "New" },
-  { id: "urban-jacket", name: "Urban jacket", category: "Featured", tags: ["Outerwear", "Urban"], description: "Light jacket sample product ready to replace with real stock.", price: 54900, image: productFallbackImages.urbanJacket, badge: "Featured" },
-  { id: "daily-accessory", name: "Daily accessory", category: "Accessories", tags: ["Accessories"], description: "Accessory sample item for testing the checkout flow.", price: 19900, image: productFallbackImages.dailyAccessory, badge: "Accessory" },
+  { id: "remera-senya", name: "Remera Senya", category: "Ropa", tags: ["Basicos", "Urbano"], description: "Remera liviana de uso diario con calce comodo.", price: 24900, image: productFallbackImages.basicTShirt, badge: "Nuevo" },
+  { id: "zapatillas-urbanas", name: "Zapatillas urbanas", category: "Zapatillas", tags: ["Calzado", "Urbano"], description: "Zapatillas comodas para acompanar todos tus recorridos.", price: 74900, image: productFallbackImages.sneakers, badge: "Oferta" },
+  { id: "accesorio-diario", name: "Accesorio diario", category: "Accesorios", tags: ["Accesorios"], description: "Complemento practico para sumar a cualquier look.", price: 19900, image: productFallbackImages.dailyAccessory, badge: "Accesorio" },
+  { id: "campera-senya", name: "Campera Senya", category: "Nuevos ingresos", tags: ["Abrigos", "Urbano"], description: "Campera liviana con presencia premium para media estacion.", price: 54900, image: productFallbackImages.urbanJacket, badge: "Nuevo" },
 ].map((product) => ({
   ...product,
   images: product.images || [product.image],

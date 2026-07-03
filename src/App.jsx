@@ -286,13 +286,13 @@ function AppContent() {
           </section>
         )}
 
-        <section className="intro-band" id="coleccion" aria-label={`Valores de ${activeStoreInfo.name}`}>
+        <section className="intro-band" id="nosotros" aria-label={`Valores de ${activeStoreInfo.name}`}>
           {activeIntroHighlights.map((highlight) => (
             <div key={highlight.number}><span>{highlight.number}</span><strong>{highlight.title}</strong><p>{highlight.text}</p></div>
           ))}
         </section>
 
-        <section className="category-showcase" aria-label="Categorias destacadas">
+        <section className="category-showcase" id="categorias" aria-label="Categorias destacadas">
           {activeShowcaseCategories.map((showcase) => (
             <button className={`category-tile${showcase.featured ? " large" : ""}`} type="button" style={{ "--tile-image": cssImageUrl(storeImages.categories[showcase.imageKey]) }} onClick={() => openMobileCategory(showcase.value)} key={showcase.value}>
               <span>{showcase.label}</span>
@@ -300,7 +300,7 @@ function AppContent() {
           ))}
         </section>
 
-        <section className="home-carousel" aria-label="Productos destacados en inicio">
+        <section className="home-carousel" id="ofertas" aria-label="Ofertas y productos destacados">
           <div className="section-heading compact-heading">
             <div>
               <p className="eyebrow">{activeHomeCarouselContent.eyebrow}</p>
@@ -419,6 +419,8 @@ function AppContent() {
           <img src={storeLogo} alt="" />
           <span>{activeStoreInfo.name}</span>
         </a>
+
+        <p className="footer-description">{activeFooterContent.description}</p>
 
         <div className="footer-legal">
           <p>{activeFooterContent.copyright}</p>

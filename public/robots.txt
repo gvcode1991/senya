@@ -2,4 +2,4 @@
 Allow: /
 
 # Replace this URL with your production domain before going live.
-Sitemap: https://your-domain.com/sitemap.xml
+Sitemap: https://senya.com/sitemap.xml

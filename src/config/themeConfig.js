@@ -1,42 +1,57 @@
 export const themeConfig = {
   colors: {
-    ink: "#241913",
-    muted: "#7d7067",
-    paper: "#fbf7f2",
+    bg: "#FAFAF7",
+    text: "#111827",
+    muted: "#6B7280",
+    primary: "#2563EB",
+    secondary: "#7C3AED",
+    dark: "#0B0F19",
+    white: "#FFFFFF",
+    border: "#E5E7EB",
+    ink: "#111827",
+    paper: "#FAFAF7",
     surface: "#ffffff",
-    line: "#eaded2",
-    night: "#1f2f35",
-    clay: "#9b7350",
-    sand: "#d7b58c",
-    sage: "#6f897f",
-    cream: "#fff8ef",
-    brandBg: "#f6eee6",
-    bodyWarm: "#fffaf4",
-    tickerBg: "#f5f2ed",
-    tickerText: "#6d6259",
-    brandText: "#6f5a48",
-    fieldBorder: "#d7d0c8",
-    textStrong: "#4f4640",
-    textDeep: "#3d2c23",
-    footerBg: "#4b4a47",
-    success: "#3b5a50",
+    line: "#E5E7EB",
+    night: "#0B0F19",
+    clay: "#2563EB",
+    sand: "#DBEAFE",
+    sage: "#7C3AED",
+    cream: "#F8FAFC",
+    brandBg: "#FFFFFF",
+    bodyWarm: "#FAFAF7",
+    tickerBg: "#0B0F19",
+    tickerText: "#FFFFFF",
+    brandText: "#111827",
+    fieldBorder: "#E5E7EB",
+    textStrong: "#111827",
+    textDeep: "#0B0F19",
+    footerBg: "#0B0F19",
+    success: "#047857",
     danger: "#8a332e",
-    mediaBg: "#e9eef5",
-    blue: "#3b74a6",
-    gold: "#c69b55",
-    red: "#b74d46",
+    mediaBg: "#F3F4F6",
+    blue: "#2563EB",
+    gold: "#7C3AED",
+    red: "#DC2626",
   },
   shadows: {
-    default: "0 24px 70px rgba(50, 37, 27, 0.15)",
+    default: "0 24px 70px rgba(17, 24, 39, 0.12)",
   },
   fonts: {
-    body: "\"Inter\", \"Montserrat\", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
-    brand: "Georgia, \"Times New Roman\", serif",
+    body: "\"Inter\", \"Manrope\", \"Poppins\", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+    brand: "\"Inter\", \"Manrope\", ui-sans-serif, system-ui, sans-serif",
   },
 };
 
 export function applyThemeVariables(theme = themeConfig) {
   const root = document.documentElement;
+  root.style.setProperty("--color-bg", theme.colors.bg);
+  root.style.setProperty("--color-text", theme.colors.text);
+  root.style.setProperty("--color-muted", theme.colors.muted);
+  root.style.setProperty("--color-primary", theme.colors.primary);
+  root.style.setProperty("--color-secondary", theme.colors.secondary);
+  root.style.setProperty("--color-dark", theme.colors.dark);
+  root.style.setProperty("--color-white", theme.colors.white);
+  root.style.setProperty("--color-border", theme.colors.border);
   root.style.setProperty("--ink", theme.colors.ink);
   root.style.setProperty("--muted", theme.colors.muted);
   root.style.setProperty("--paper", theme.colors.paper);

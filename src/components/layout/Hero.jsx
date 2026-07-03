@@ -9,7 +9,7 @@ export function Hero({ cssImageUrl, heroContent, images }) {
         <p className="hero-text">{heroContent.description}</p>
         <div className="hero-actions">
           <a className="primary-action" href="#productos">{heroContent.primaryAction}</a>
-          <a className="secondary-action" href="#coleccion">{heroContent.secondaryAction}</a>
+          <a className="secondary-action" href="#ofertas">{heroContent.secondaryAction}</a>
         </div>
       </div>
     </section>
