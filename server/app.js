@@ -105,6 +105,11 @@ export function createApp() {
     response.status(health.ok ? 200 : 503).json(health);
   });
 
+  app.get("/api/health/cloudinary", async (_request, response) => {
+    const cloudinary = await safeServiceCheck("cloudinary", verifyCloudinaryConnection);
+    response.status(cloudinary.ok ? 200 : 503).json(cloudinary);
+  });
+
   app.get("/api/health/email", requireAdmin, async (_request, response) => {
     const email = await verifyEmailConnection();
     response.status(email.ok ? 200 : 503).json(email);
