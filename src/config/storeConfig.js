@@ -1,6 +1,6 @@
 import { productFallbackImages } from "./images";
 
-export const appVersion = "3.1.0";
+export const appVersion = "3.2.0";
 
 export const storageKeys = {
   cart: "senya-cart",
@@ -200,6 +200,10 @@ export const adminContent = {
   createProductTitle: "Nuevo producto",
   editProductTitle: "Modificar producto",
   productsTitle: "Catalogo cargado",
+  productsSearchPlaceholder: "Buscar por nombre, codigo, categoria o color",
+  productsEmpty: "No encontramos productos con esa busqueda.",
+  paginationPrevious: "Anterior",
+  paginationNext: "Siguiente",
   accessTitle: "Acceso admin",
   emailLabel: "Email admin",
   emailPlaceholder: "admin@example.com",
@@ -209,6 +213,7 @@ export const adminContent = {
   ordersTitle: "Pedidos recientes",
   ordersEmpty: "Todavia no hay pedidos.",
   ordersRefresh: "Actualizar pedidos",
+  ordersSearchPlaceholder: "Buscar por cliente, email, telefono o producto",
   ordersAccept: "Aceptar pedido",
   ordersReject: "Rechazar pedido",
   ordersRejectReason: "Motivo del rechazo",

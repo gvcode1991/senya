@@ -747,6 +747,52 @@ h2 { margin-bottom: 0; font-size: clamp(1.9rem, 3.5vw, 3.15rem); font-weight: 82
   gap: 14px;
   padding: 16px;
 }
+.admin-list-search {
+  display: grid;
+  gap: 6px;
+  padding: 14px;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 750;
+}
+.admin-list-search input {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0 12px;
+  background: var(--body-warm);
+  color: var(--ink);
+  outline: 0;
+}
+.admin-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px;
+  border-top: 1px solid var(--line);
+}
+.admin-pagination button {
+  min-height: 36px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0 14px;
+  background: var(--body-warm);
+  color: var(--clay);
+  cursor: pointer;
+  font-weight: 750;
+}
+.admin-pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+.admin-pagination span {
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 800;
+}
 .admin-orders-header {
   display: flex;
   align-items: center;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 
 import { adminContent } from "../../config/storeConfig";
 import { formatter } from "../../utils/formatters";
@@ -9,9 +9,35 @@ function buildCustomerWhatsApp(order) {
   return phone ? `https://wa.me/${phone}?text=${text}` : "";
 }
 
+const ordersPerPage = 3;
+
 export function AdminOrdersList({ onUpdateOrderStatus, orders, ordersStatus, refreshOrders }) {
   const statusLabels = adminContent.ordersStatusLabels;
   const [rejectReasons, setRejectReasons] = useState({});
+  const [page, setPage] = useState(1);
+  const [query, setQuery] = useState("");
+  const normalizedQuery = query.trim().toLowerCase();
+  const filteredOrders = useMemo(() => {
+    if (!normalizedQuery) return orders;
+
+    return orders.filter((order) => [
+      order.id,
+      order.status,
+      statusLabels[order.status],
+      order.customer?.name,
+      order.customer?.email,
+      order.customer?.phone,
+      ...(order.items || []).flatMap((item) => [item.name, item.category, item.description, item.size, item.color]),
+    ].join(" ").toLowerCase().includes(normalizedQuery));
+  }, [normalizedQuery, orders, statusLabels]);
+  const pageCount = Math.max(1, Math.ceil(filteredOrders.length / ordersPerPage));
+  const safePage = Math.min(page, pageCount);
+  const visibleOrders = filteredOrders.slice((safePage - 1) * ordersPerPage, safePage * ordersPerPage);
+
+  function updateQuery(value) {
+    setQuery(value);
+    setPage(1);
+  }
 
   function updateRejectReason(orderId, value) {
     setRejectReasons((currentReasons) => ({ ...currentReasons, [orderId]: value }));
@@ -27,7 +53,12 @@ export function AdminOrdersList({ onUpdateOrderStatus, orders, ordersStatus, ref
         <button className="secondary-admin-button" type="button" onClick={refreshOrders}>{adminContent.ordersRefresh}</button>
       </div>
 
-      {orders.length ? orders.map((order) => (
+      <label className="admin-list-search">
+        <span>Buscar pedidos</span>
+        <input value={query} onChange={(event) => updateQuery(event.target.value)} type="search" placeholder={adminContent.ordersSearchPlaceholder} />
+      </label>
+
+      {visibleOrders.length ? visibleOrders.map((order) => (
         <article className="admin-order-card" key={order.id || order.createdAt}>
           <div className="admin-order-top">
             <div>
@@ -81,6 +112,13 @@ export function AdminOrdersList({ onUpdateOrderStatus, orders, ordersStatus, ref
           )}
         </article>
       )) : <p className="empty-state">{adminContent.ordersEmpty}</p>}
+      {pageCount > 1 && (
+        <div className="admin-pagination">
+          <button type="button" onClick={() => setPage((currentPage) => Math.max(1, currentPage - 1))} disabled={safePage === 1}>{adminContent.paginationPrevious}</button>
+          <span>{safePage} / {pageCount}</span>
+          <button type="button" onClick={() => setPage((currentPage) => Math.min(pageCount, currentPage + 1))} disabled={safePage === pageCount}>{adminContent.paginationNext}</button>
+        </div>
+      )}
     </section>
   );
 }
