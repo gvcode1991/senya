@@ -775,6 +775,37 @@ h2 { margin-bottom: 0; font-size: clamp(1.9rem, 3.5vw, 3.15rem); font-weight: 82
 .account-summary strong {
   color: var(--clay);
 }
+.account-details {
+  display: grid;
+  gap: 8px;
+  margin: 4px 0;
+}
+.account-details div {
+  display: grid;
+  grid-template-columns: minmax(86px, auto) 1fr;
+  gap: 12px;
+  align-items: baseline;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: var(--body-warm);
+}
+.account-details dt {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 750;
+  text-transform: uppercase;
+}
+.account-details dd {
+  min-width: 0;
+  margin: 0;
+  color: var(--ink);
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+.account-resend {
+  width: fit-content;
+}
 .account-check {
   color: var(--ink);
 }
@@ -955,6 +986,21 @@ h2 { margin-bottom: 0; font-size: clamp(1.9rem, 3.5vw, 3.15rem); font-weight: 82
   color: rgba(255, 255, 255, 0.72);
   font-size: 0.82rem;
   font-weight: 650;
+}
+.powered-by {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.82rem;
+  font-weight: 650;
+}
+.powered-by img {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.24));
 }
 
 .cart-panel { position: fixed; top: 0; right: 0; z-index: 50; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; width: min(460px, 100vw); height: 100dvh; background: var(--surface); box-shadow: var(--shadow); transform: translateX(105%); transition: transform 190ms ease; overscroll-behavior: contain; }

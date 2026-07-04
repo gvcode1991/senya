@@ -10,7 +10,7 @@ import { createProduct, decrementProductStock, deleteProduct, getAvailableStock,
 import { uploadProductImage, isCloudinaryConfigured, verifyCloudinaryConnection } from "./services/cloudinaryService.js";
 import { sendAccountConfirmationEmail, isEmailConfigured, verifyEmailConnection } from "./services/emailService.js";
 import { createAdminSessionToken, createSessionToken, verifySessionToken } from "./services/authService.js";
-import { attachPurchaseToUser, authenticateUser, confirmUserEmail, deletePendingUser, getUserByEmail, isVerifiedUserEmail, listUsers, registerUser, setFavorite, updateUserPreferences, updateUserRole } from "./services/usersService.js";
+import { attachPurchaseToUser, authenticateUser, confirmUserEmail, createUserConfirmationToken, deletePendingUser, getUserByEmail, isVerifiedUserEmail, listUsers, registerUser, setFavorite, updateUserPreferences, updateUserRole } from "./services/usersService.js";
 import { notifyAdminOrder } from "./services/whatsappService.js";
 import { getPublicAppUrl, getServiceName, getStoreName } from "./config/storeConfig.js";
 import { connectToDatabase } from "./db/mongo.js";
@@ -308,6 +308,48 @@ export function createApp() {
     }
   });
 
+  app.post("/api/users/:email/confirmation", requireUser, requireSameUser, async (request, response, next) => {
+    try {
+      const user = await createUserConfirmationToken(request.params.email);
+
+      if (!user) {
+        response.status(404).json({ message: "Usuario no encontrado." });
+        return;
+      }
+
+      if (user.alreadyVerified) {
+        response.json({
+          user,
+          email: {
+            sent: false,
+            alreadyVerified: true,
+            message: "La cuenta ya esta activada.",
+          },
+        });
+        return;
+      }
+
+      try {
+        const email = await sendAccountConfirmationEmail(user, user.confirmationToken);
+        const { confirmationToken, ...publicUser } = user;
+        response.json({ user: publicUser, email });
+      } catch (error) {
+        const { confirmationToken, ...publicUser } = user;
+        response.status(502).json({
+          user: publicUser,
+          email: {
+            sent: false,
+            reason: "email-failed",
+            message: getEmailFailureMessage(error),
+          },
+          message: getEmailFailureMessage(error),
+        });
+      }
+    } catch (error) {
+      next(error);
+    }
+  });
+
   app.get("/api/users/:email", requireUser, requireSameUser, async (request, response, next) => {
     try {
       const user = await getUserByEmail(request.params.email);
@@ -587,5 +629,5 @@ function getEmailFailureMessage(error) {
     return "No pudimos enviar el email de activacion. Con Resend en modo prueba/onboarding solo puede funcionar con emails permitidos por la cuenta. Para registrar clientes reales, verifica un dominio propio en Resend o usa el email de prueba autorizado.";
   }
 
-  return "No pudimos enviar el email de activacion. La cuenta no se guardo; revisa Resend en Render y proba nuevamente.";
+  return "No pudimos enviar el email de activacion. La cuenta quedo creada; revisa Resend en Render y proba nuevamente.";
 }

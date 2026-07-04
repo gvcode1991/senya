@@ -12,6 +12,10 @@ export function getUserAccount(email, options = {}) {
   return apiGet(`/users/${encodeURIComponent(email)}`, options);
 }
 
+export function resendConfirmationEmail(email, options = {}) {
+  return apiPost(`/users/${encodeURIComponent(email)}/confirmation`, {}, options);
+}
+
 export function updateFavorite(email, productId, data, options = {}) {
   return apiPut(`/users/${encodeURIComponent(email)}/favorites/${productId}`, data, options);
 }

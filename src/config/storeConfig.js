@@ -1,6 +1,6 @@
 import { productFallbackImages } from "./images";
 
-export const appVersion = "1.0.0";
+export const appVersion = "1.1.0";
 
 export const storageKeys = {
   cart: "senya-cart",
@@ -151,6 +151,7 @@ export const accountContent = {
     pendingText: `Despues de registrarte, abri el email de ${storeInfo.name} y confirma tu cuenta para habilitar compras.`,
     activeStatus: "Cuenta activa",
     pendingStatus: "Pendiente de activacion",
+    waitingStatus: "Esperando registro",
   },
   account: {
     eyebrow: "Mi cuenta",
@@ -164,6 +165,10 @@ export const accountContent = {
     emptyText: "Ingresa con tu email y contrasena para ver tus compras y preferencias.",
     activeState: "activa",
     pendingState: "pendiente de confirmacion",
+    emailDetail: "Email",
+    nameDetail: "Nombre",
+    phoneDetail: "Telefono",
+    resendConfirmationLabel: "Reenviar email de confirmacion",
     notificationsLabel: "Recibir notificaciones al mail",
     favoritesLabel: "Favoritos",
     purchasesLabel: "Compras realizadas",
@@ -175,6 +180,8 @@ export const footerContent = {
   contactTitle: "Contactanos",
   description: "Tienda online de ropa, zapatillas y accesorios.",
   copyright: `Copyright ${storeInfo.legalName} - 2026. Todos los derechos reservados.`,
+  poweredBy: "powered by villamayorlabs",
+  poweredByLogo: "https://res.cloudinary.com/villamayorlabs/image/upload/v1783051354/logoSF_zva2f0.png",
 };
 
 export const adminContent = {

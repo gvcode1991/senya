@@ -73,6 +73,47 @@ export async function deletePendingUser(email) {
   return result.deletedCount > 0;
 }
 
+export async function createUserConfirmationToken(email) {
+  const normalizedEmail = normalizeEmail(email);
+
+  if (!normalizedEmail) {
+    return null;
+  }
+
+  const confirmationToken = crypto.randomBytes(24).toString("hex");
+  const database = await connectToDatabase();
+
+  if (!database.connected) {
+    const user = memoryUsers.get(normalizedEmail);
+    if (!user) return null;
+
+    if (user.emailVerified) {
+      return { ...sanitizeUser(user), alreadyVerified: true };
+    }
+
+    user.confirmationToken = confirmationToken;
+    user.confirmationSentAt = new Date().toISOString();
+    memoryUsers.set(normalizedEmail, user);
+    return { ...sanitizeUser(user), confirmationToken };
+  }
+
+  const user = await User.findOne({ email: normalizedEmail }).populate("purchases");
+
+  if (!user) {
+    return null;
+  }
+
+  if (user.emailVerified) {
+    return { ...user.toJSON(), alreadyVerified: true };
+  }
+
+  user.confirmationToken = confirmationToken;
+  user.confirmationSentAt = new Date();
+  await user.save();
+
+  return { ...user.toJSON(), confirmationToken };
+}
+
 export async function authenticateUser(email, password) {
   const normalizedEmail = normalizeEmail(email);
   const database = await connectToDatabase();

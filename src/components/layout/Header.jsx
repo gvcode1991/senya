@@ -17,6 +17,22 @@ export function Header({
   userAccount,
 }) {
   const hasActiveUser = Boolean(userAccount);
+  const openNavLink = (event, link) => {
+    if (link.external) return;
+
+    event.preventDefault();
+
+    if (link.path) {
+      navigateTo(link.path);
+      return;
+    }
+
+    if (link.href?.startsWith("#")) {
+      const sectionId = link.href.slice(1);
+      if (sectionId === "inicio") navigateTo("/");
+      else navigateToSection("/", sectionId);
+    }
+  };
 
   return (
     <header className="site-header">
@@ -64,7 +80,7 @@ export function Header({
             href={link.path || link.href}
             target={link.external ? "_blank" : undefined}
             rel={link.external ? "noreferrer" : undefined}
-            onClick={link.path ? (event) => { event.preventDefault(); navigateTo(link.path); } : undefined}
+            onClick={(event) => openNavLink(event, link)}
             key={`${link.label}-${link.path || link.href}`}
           >
             {link.label}

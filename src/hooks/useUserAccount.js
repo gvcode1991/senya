@@ -1,10 +1,11 @@
 import { orderMessages } from "../config/storeConfig";
 import { useUserContext } from "../contexts/UserContext";
-import { loginUser, registerUser, updateFavorite, updatePreferences } from "../services/usersApi";
+import { loginUser, registerUser, resendConfirmationEmail as resendConfirmationEmailRequest, updateFavorite, updatePreferences } from "../services/usersApi";
 
 export function useUserAccount({ navigateTo }) {
   const {
     accountLookup,
+    emptyUserForm,
     logoutUser,
     setAccountLookup,
     setUserAccount,
@@ -37,6 +38,7 @@ export function useUserAccount({ navigateTo }) {
       setUserAccount(data.user);
       setUserToken(data.token || "");
       setAccountLookup({ email: data.user.email, password: "" });
+      setUserForm(emptyUserForm);
       const emailSent = Boolean(data.email?.sent);
       setUserStatus({
         state: emailSent ? "success" : "error",
@@ -46,6 +48,33 @@ export function useUserAccount({ navigateTo }) {
       });
     } catch (error) {
       setUserStatus({ state: "error", message: `${error.message} ${orderMessages.apiErrorSuffix}` });
+    }
+  }
+
+  async function resendConfirmationEmail() {
+    if (!userAccount?.email || userAccount.emailVerified) return;
+
+    setUserStatus({ state: "loading", message: "Enviando confirmacion..." });
+
+    try {
+      const { response, data } = await resendConfirmationEmailRequest(userAccount.email, { headers: authHeaders() });
+
+      if (!response.ok) {
+        throw new Error(data.message || "No pudimos reenviar el email de confirmacion.");
+      }
+
+      if (data.user) {
+        setUserAccount(data.user);
+      }
+
+      setUserStatus({
+        state: "success",
+        message: data.email?.alreadyVerified
+          ? "La cuenta ya esta activada."
+          : "Te reenviamos el email de confirmacion.",
+      });
+    } catch (error) {
+      setUserStatus({ state: "error", message: error.message });
     }
   }
 
@@ -125,6 +154,7 @@ export function useUserAccount({ navigateTo }) {
     loadAccount,
     logoutUser,
     saveAccountPreferences,
+    resendConfirmationEmail,
     setUserAccount,
     setUserStatus,
     submitUser,

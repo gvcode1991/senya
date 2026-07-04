@@ -8,6 +8,7 @@ export function AccountPanel({
   isRegisterRoute,
   loadAccount,
   logoutUser,
+  resendConfirmationEmail,
   saveAccountPreferences,
   submitUser,
   updateAccountLookup,
@@ -41,7 +42,7 @@ export function AccountPanel({
           <div className="account-summary">
             <h3>{userAccount ? userAccount.name : accountContent.register.pendingTitle}</h3>
             <p>{userAccount ? userAccount.email : accountContent.register.pendingText}</p>
-            <strong>{userAccount?.emailVerified ? accountContent.register.activeStatus : accountContent.register.pendingStatus}</strong>
+            <strong>{userAccount ? (userAccount.emailVerified ? accountContent.register.activeStatus : accountContent.register.pendingStatus) : accountContent.register.waitingStatus}</strong>
           </div>
         </div>
       </section>
@@ -68,10 +69,21 @@ export function AccountPanel({
           </form>
         )}
         <div className="account-summary">
-          <h3>{userAccount ? userAccount.email : accountContent.account.emptyTitle}</h3>
+          <h3>{userAccount ? userAccount.name : accountContent.account.emptyTitle}</h3>
           <p>{userAccount ? `Estado: ${userAccount.emailVerified ? accountContent.account.activeState : accountContent.account.pendingState}` : accountContent.account.emptyText}</p>
           {userAccount && (
             <>
+              <dl className="account-details">
+                <div><dt>{accountContent.account.emailDetail}</dt><dd>{userAccount.email}</dd></div>
+                <div><dt>{accountContent.account.nameDetail}</dt><dd>{userAccount.name || "-"}</dd></div>
+                <div><dt>{accountContent.account.phoneDetail}</dt><dd>{userAccount.phone || "-"}</dd></div>
+              </dl>
+              {!userAccount.emailVerified && (
+                <button className="secondary-admin-button account-resend" type="button" onClick={resendConfirmationEmail} disabled={userStatus.state === "loading"}>
+                  {accountContent.account.resendConfirmationLabel}
+                </button>
+              )}
+              {userStatus.message && <p className={`checkout-message ${userStatus.state}`}>{userStatus.message}</p>}
               <label className="checkbox-label account-check"><input checked={Boolean(userAccount.acceptsMarketing)} onChange={(event) => saveAccountPreferences(event.target.checked)} type="checkbox" /> {accountContent.account.notificationsLabel}</label>
               <strong>{accountContent.account.favoritesLabel}: {(userAccount.favorites || []).length}</strong>
               <strong>{accountContent.account.purchasesLabel}: {(userAccount.purchases || []).length}</strong>

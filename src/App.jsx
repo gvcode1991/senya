@@ -155,6 +155,7 @@ function AppContent() {
     userForm,
     userStatus,
     userToken,
+    resendConfirmationEmail,
   } = useUserAccount({ navigateTo });
   const {
     buildWhatsAppMessage,
@@ -234,6 +235,23 @@ function AppContent() {
     setCategory(nextCategory);
     setMenuOpen(false);
     navigateToSection("/", "productos");
+  }
+
+  function openNavigationLink(event, link) {
+    if (link.external) return;
+
+    event.preventDefault();
+
+    if (link.path) {
+      navigateTo(link.path);
+      return;
+    }
+
+    if (link.href?.startsWith("#")) {
+      const sectionId = link.href.slice(1);
+      if (sectionId === "inicio") navigateTo("/");
+      else navigateToSection("/", sectionId);
+    }
   }
 
   function closeLayers() {
@@ -328,7 +346,7 @@ function AppContent() {
               <p className="eyebrow">{activeHomeCarouselContent.eyebrow}</p>
               <h2>{activeHomeCarouselContent.title}</h2>
             </div>
-            <a className="text-link" href="#productos">{activeHomeCarouselContent.viewAllText}</a>
+            <a className="text-link" href="#productos" onClick={(event) => { event.preventDefault(); navigateToSection("/", "productos"); }}>{activeHomeCarouselContent.viewAllText}</a>
           </div>
 
           <div className="carousel-track">
@@ -388,6 +406,7 @@ function AppContent() {
             isRegisterRoute={isRegisterRoute}
             loadAccount={loadAccount}
             logoutUser={logoutUser}
+            resendConfirmationEmail={resendConfirmationEmail}
             saveAccountPreferences={saveAccountPreferences}
             submitUser={submitUser}
             updateAccountLookup={updateAccountLookup}
@@ -423,7 +442,7 @@ function AppContent() {
             {activeFooterNavigationLinks.map((link) => link.path ? (
               <a href={link.path} onClick={(event) => { event.preventDefault(); navigateTo(link.path); }} key={link.label}>{link.label}</a>
             ) : (
-              <a href={link.href} key={link.label}>{link.label}</a>
+              <a href={link.href} onClick={(event) => openNavigationLink(event, link)} key={link.label}>{link.label}</a>
             ))}
           </details>
           <details>
@@ -447,6 +466,10 @@ function AppContent() {
 
         <div className="footer-legal">
           <p>{activeFooterContent.copyright}</p>
+          <div className="powered-by">
+            <span>{activeFooterContent.poweredBy}</span>
+            <img src={activeFooterContent.poweredByLogo} alt="villamayorlabs" />
+          </div>
           <span className="version-mark">v{appVersion}</span>
         </div>
       </footer>
