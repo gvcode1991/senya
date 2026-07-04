@@ -8,6 +8,10 @@ export function loginUser(credentials) {
   return apiPost("/auth/login", credentials);
 }
 
+export function confirmUserEmail(token) {
+  return apiPost(`/users/confirm/${encodeURIComponent(token)}`, {});
+}
+
 export function getUserAccount(email, options = {}) {
   return apiGet(`/users/${encodeURIComponent(email)}`, options);
 }

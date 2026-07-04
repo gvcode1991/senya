@@ -1,6 +1,6 @@
 import { orderMessages } from "../config/storeConfig";
 import { useUserContext } from "../contexts/UserContext";
-import { getUserAccount, loginUser, registerUser, resendConfirmationEmail as resendConfirmationEmailRequest, updateFavorite, updatePreferences } from "../services/usersApi";
+import { confirmUserEmail, getUserAccount, loginUser, registerUser, resendConfirmationEmail as resendConfirmationEmailRequest, updateFavorite, updatePreferences } from "../services/usersApi";
 
 export function useUserAccount({ navigateTo }) {
   const {
@@ -128,6 +128,30 @@ export function useUserAccount({ navigateTo }) {
     }
   }
 
+  async function confirmAccountFromToken(token, syncCheckoutEmail) {
+    if (!token) return false;
+
+    setUserStatus({ state: "loading", message: "Activando cuenta..." });
+
+    try {
+      const { response, data } = await confirmUserEmail(token);
+
+      if (!response.ok) {
+        throw new Error(data.message || "El enlace de confirmacion no es valido o ya fue utilizado.");
+      }
+
+      setUserAccount(data.user);
+      setUserToken(data.token || "");
+      setAccountLookup({ email: data.user.email, password: "" });
+      syncCheckoutEmail?.(data.user.email);
+      setUserStatus({ state: "success", message: "Cuenta activada. Ya estas en tu panel." });
+      return true;
+    } catch (error) {
+      setUserStatus({ state: "error", message: error.message });
+      return false;
+    }
+  }
+
   async function saveAccountPreferences(acceptsMarketing) {
     if (!userAccount?.email) return;
 
@@ -174,6 +198,7 @@ export function useUserAccount({ navigateTo }) {
   return {
     accountLookup,
     authHeaders,
+    confirmAccountFromToken,
     loadAccount,
     loadConfirmedAccount,
     logoutUser,

@@ -109,7 +109,7 @@ export async function sendAccountConfirmationEmail(user, token) {
 
   const storeName = getStoreName();
   const appUrl = getPublicAppUrl();
-  const confirmUrl = `${appUrl}/api/users/confirm/${token}`;
+  const confirmUrl = new URL(`/api/users/confirm/${token}`, appUrl).toString();
   const response = await fetch(`${resendApiUrl}/emails`, {
     method: "POST",
     headers: getResendHeaders(),

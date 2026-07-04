@@ -142,6 +142,7 @@ function AppContent() {
   const cartQuantity = cartLines.reduce((sum, item) => sum + item.quantity, 0);
   const {
     accountLookup,
+    confirmAccountFromToken,
     loadConfirmedAccount,
     loadAccount: loadUserAccount,
     logoutUser,
@@ -183,6 +184,16 @@ function AppContent() {
   function loadAccount(event) {
     return loadUserAccount(event, syncCheckoutEmail);
   }
+
+  useEffect(() => {
+    const confirmationMatch = window.location.pathname.match(/\/api\/users\/confirm\/([^/?#]+)/);
+    if (!confirmationMatch) return;
+
+    const token = decodeURIComponent(confirmationMatch[1]);
+    setCurrentPath("/cuenta");
+    window.history.replaceState({}, "", "/cuenta");
+    confirmAccountFromToken(token, syncCheckoutEmail);
+  }, [confirmAccountFromToken, syncCheckoutEmail]);
 
   useEffect(() => {
     if (currentPath !== "/cuenta") return;

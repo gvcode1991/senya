@@ -290,6 +290,21 @@ export function createApp() {
     }
   });
 
+  app.post("/api/users/confirm/:token", async (request, response, next) => {
+    try {
+      const user = await confirmUserEmail(request.params.token);
+
+      if (!user) {
+        response.status(404).json({ message: "El enlace de confirmacion no es valido o ya fue utilizado." });
+        return;
+      }
+
+      response.json({ user, token: createSessionToken(user) });
+    } catch (error) {
+      next(error);
+    }
+  });
+
   app.get("/api/users/confirm/:token", async (request, response, next) => {
     try {
       const user = await confirmUserEmail(request.params.token);
