@@ -29,6 +29,7 @@ import { CartProvider, useCartContext } from "./contexts/CartContext";
 import { StoreProvider, useStoreContext } from "./contexts/StoreContext";
 import { UserProvider } from "./contexts/UserContext";
 import { useAdminAuth } from "./hooks/useAdminAuth";
+import { useAdminOrders } from "./hooks/useAdminOrders";
 import { useAdminProducts } from "./hooks/useAdminProducts";
 import { useCheckout } from "./hooks/useCheckout";
 import { useProductImageUpload } from "./hooks/useProductImageUpload";
@@ -96,6 +97,7 @@ function AppContent() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("Todos");
   const { activeProducts, carouselProducts, catalogStatus, loadProducts, products, visibleProducts } = useProducts({ category, query });
+  const { adminOrders, adminOrdersStatus, loadAdminOrders } = useAdminOrders({ adminHeaders, adminUnlocked });
   const {
     appendProductImage,
     editingProductId,
@@ -133,6 +135,12 @@ function AppContent() {
     window.addEventListener("popstate", handleNavigation);
     return () => window.removeEventListener("popstate", handleNavigation);
   }, []);
+
+  useEffect(() => {
+    if (adminUnlocked) {
+      loadAdminOrders();
+    }
+  }, [adminUnlocked]);
 
   const cartLines = useMemo(
     () => cart.map((item) => ({ ...products.find((product) => product.id === item.id), quantity: item.quantity, size: item.size || "", color: item.color || "" })).filter((item) => item.id),
@@ -399,6 +407,8 @@ function AppContent() {
         {isAdminRoute && (
           <AdminPanel
             adminLogin={adminLogin}
+            adminOrders={adminOrders}
+            adminOrdersStatus={adminOrdersStatus}
             adminStatus={adminStatus}
             adminUnlocked={adminUnlocked}
             editingProductId={editingProductId}
@@ -406,6 +416,7 @@ function AppContent() {
             imageUpload={imageUpload}
             productForm={productForm}
             products={products}
+            refreshOrders={loadAdminOrders}
             removeProduct={removeProduct}
             resetProductForm={resetProductForm}
             submitProduct={submitProduct}

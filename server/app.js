@@ -462,6 +462,9 @@ export function createApp() {
         return {
           id: product.id,
           name: product.name,
+          category: product.category || "",
+          description: product.description || "",
+          image: product.image || "",
           quantity,
           size,
           color,

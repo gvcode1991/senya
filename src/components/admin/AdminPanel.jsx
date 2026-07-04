@@ -1,10 +1,13 @@
 import React from "react";
+import { AdminOrdersList } from "./AdminOrdersList";
 import { AdminProductsList } from "./AdminProductsList";
 import { ProductForm } from "./ProductForm";
 import { adminContent } from "../../config/storeConfig";
 
 export function AdminPanel({
   adminLogin,
+  adminOrders,
+  adminOrdersStatus,
   adminStatus,
   adminUnlocked,
   editingProductId,
@@ -12,6 +15,7 @@ export function AdminPanel({
   imageUpload,
   productForm,
   products,
+  refreshOrders,
   removeProduct,
   resetProductForm,
   submitProduct,
@@ -65,6 +69,14 @@ export function AdminPanel({
           removeProduct={removeProduct}
         />
       </div>
+
+      {adminUnlocked && (
+        <AdminOrdersList
+          orders={adminOrders}
+          ordersStatus={adminOrdersStatus}
+          refreshOrders={refreshOrders}
+        />
+      )}
     </section>
   );
 }
