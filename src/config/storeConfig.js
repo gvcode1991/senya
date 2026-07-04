@@ -1,6 +1,6 @@
 import { productFallbackImages } from "./images";
 
-export const appVersion = "3.2.1";
+export const appVersion = "3.2.2";
 
 export const storageKeys = {
   cart: "senya-cart",

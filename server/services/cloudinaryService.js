@@ -3,24 +3,53 @@ import { v2 as cloudinary } from "cloudinary";
 import { getCloudinaryFolder } from "../config/storeConfig.js";
 
 export function isCloudinaryConfigured() {
-  return Boolean(
-    process.env.CLOUDINARY_URL ||
-    (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET),
-  );
+  return hasSplitCloudinaryCredentials() || Boolean(process.env.CLOUDINARY_URL);
 }
 
 function configureCloudinary() {
-  if (process.env.CLOUDINARY_URL) {
-    cloudinary.config({ secure: true });
-    return;
+  const splitCredentials = getSplitCloudinaryCredentials();
+
+  if (splitCredentials) {
+    cloudinary.config(splitCredentials);
+    return "split-env";
   }
 
-  cloudinary.config({
-    cloud_name: String(process.env.CLOUDINARY_CLOUD_NAME || "").trim(),
-    api_key: String(process.env.CLOUDINARY_API_KEY || "").trim(),
-    api_secret: String(process.env.CLOUDINARY_API_SECRET || "").trim(),
+  cloudinary.config({ secure: true });
+  return "cloudinary-url";
+}
+
+function getSplitCloudinaryCredentials() {
+  const cloudName = String(process.env.CLOUDINARY_CLOUD_NAME || "").trim();
+  const apiKey = String(process.env.CLOUDINARY_API_KEY || "").trim();
+  const apiSecret = String(process.env.CLOUDINARY_API_SECRET || "").trim();
+
+  if (!cloudName || !apiKey || !apiSecret) {
+    return null;
+  }
+
+  return {
+    cloud_name: cloudName,
+    api_key: apiKey,
+    api_secret: apiSecret,
     secure: true,
-  });
+  };
+}
+
+function hasSplitCloudinaryCredentials() {
+  return Boolean(getSplitCloudinaryCredentials());
+}
+
+function getSafeCloudinaryConfig(source) {
+  const splitCredentials = getSplitCloudinaryCredentials();
+  const apiKey = splitCredentials?.api_key || "";
+
+  return {
+    source,
+    hasCloudinaryUrl: Boolean(process.env.CLOUDINARY_URL),
+    cloudName: splitCredentials?.cloud_name || "from-cloudinary-url",
+    apiKey: apiKey ? `...${apiKey.slice(-4)}` : "",
+    folder: getCloudinaryFolder(),
+  };
 }
 
 function getCloudinaryErrorMessage(error) {
@@ -33,7 +62,7 @@ export async function verifyCloudinaryConnection() {
   }
 
   try {
-    configureCloudinary();
+    const source = configureCloudinary();
     const result = await cloudinary.api.ping();
     const status = result?.status || result?.message || "unknown";
     return {
@@ -41,6 +70,7 @@ export async function verifyCloudinaryConnection() {
       configured: true,
       provider: "cloudinary",
       status,
+      config: getSafeCloudinaryConfig(source),
     };
   } catch (error) {
     return {
@@ -49,6 +79,7 @@ export async function verifyCloudinaryConnection() {
       provider: "cloudinary",
       status: error.http_code || error.status || undefined,
       message: getCloudinaryErrorMessage(error),
+      config: getSafeCloudinaryConfig(hasSplitCloudinaryCredentials() ? "split-env" : "cloudinary-url"),
     };
   }
 }
