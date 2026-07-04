@@ -142,8 +142,10 @@ function AppContent() {
   const cartQuantity = cartLines.reduce((sum, item) => sum + item.quantity, 0);
   const {
     accountLookup,
+    loadConfirmedAccount,
     loadAccount: loadUserAccount,
     logoutUser,
+    registrationFormKey,
     saveAccountPreferences,
     setUserStatus,
     setUserAccount,
@@ -188,16 +190,20 @@ function AppContent() {
     if (searchParams.get("confirmed") !== "1") return;
     const confirmedEmail = searchParams.get("email") || "";
 
-    if (confirmedEmail) {
+    const confirmedToken = searchParams.get("token") || "";
+
+    if (confirmedEmail && confirmedToken) {
+      loadConfirmedAccount(confirmedEmail, confirmedToken, syncCheckoutEmail);
+    } else if (confirmedEmail) {
       updateAccountLookup("email", confirmedEmail);
+      setUserStatus({
+        state: "success",
+        message: "Cuenta activada. Inicia sesion para entrar a tu panel.",
+      });
     }
 
-    setUserStatus({
-      state: "success",
-      message: "Cuenta activada. Inicia sesion para entrar a tu panel.",
-    });
     window.history.replaceState({}, "", "/cuenta");
-  }, [currentPath, setUserStatus, updateAccountLookup]);
+  }, [currentPath, loadConfirmedAccount, setUserStatus, syncCheckoutEmail, updateAccountLookup]);
 
   const selectedProduct = useMemo(() => {
     const match = currentPath.match(/^\/producto\/([^/]+)/);
@@ -406,6 +412,7 @@ function AppContent() {
             isRegisterRoute={isRegisterRoute}
             loadAccount={loadAccount}
             logoutUser={logoutUser}
+            registrationFormKey={registrationFormKey}
             resendConfirmationEmail={resendConfirmationEmail}
             saveAccountPreferences={saveAccountPreferences}
             submitUser={submitUser}

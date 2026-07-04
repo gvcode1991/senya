@@ -8,6 +8,7 @@ export function AccountPanel({
   isRegisterRoute,
   loadAccount,
   logoutUser,
+  registrationFormKey,
   resendConfirmationEmail,
   saveAccountPreferences,
   submitUser,
@@ -28,12 +29,12 @@ export function AccountPanel({
           </div>
         </div>
         <div className="account-layout">
-          <form className="admin-form" onSubmit={submitUser}>
+          <form className="admin-form" onSubmit={submitUser} key={`register-${registrationFormKey}`} autoComplete="off">
             <div className="admin-grid">
-              <label>Nombre<input value={userForm.name} onChange={(event) => updateUserForm("name", event.target.value)} type="text" required /></label>
-              <label>Email<input value={userForm.email} onChange={(event) => updateUserForm("email", event.target.value)} type="email" required /></label>
-              <label>Telefono<input value={userForm.phone} onChange={(event) => updateUserForm("phone", event.target.value)} type="tel" /></label>
-              <label>Contrasena<input value={userForm.password} onChange={(event) => updateUserForm("password", event.target.value)} type="password" minLength="8" required /></label>
+              <label>Nombre<input value={userForm.name} onChange={(event) => updateUserForm("name", event.target.value)} type="text" autoComplete="off" required /></label>
+              <label>Email<input value={userForm.email} onChange={(event) => updateUserForm("email", event.target.value)} type="email" autoComplete="off" required /></label>
+              <label>Telefono<input value={userForm.phone} onChange={(event) => updateUserForm("phone", event.target.value)} type="tel" autoComplete="off" /></label>
+              <label>Contrasena<input value={userForm.password} onChange={(event) => updateUserForm("password", event.target.value)} type="password" minLength="8" autoComplete="new-password" required /></label>
               <label className="checkbox-label"><input checked={userForm.acceptsMarketing} onChange={(event) => updateUserForm("acceptsMarketing", event.target.checked)} type="checkbox" /> {accountContent.register.marketingLabel}</label>
             </div>
             {userStatus.message && <p className={`checkout-message ${userStatus.state}`}>{userStatus.message}</p>}

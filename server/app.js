@@ -302,6 +302,7 @@ export function createApp() {
       const redirectUrl = new URL("/cuenta", getPublicAppUrl());
       redirectUrl.searchParams.set("confirmed", "1");
       redirectUrl.searchParams.set("email", user.email);
+      redirectUrl.searchParams.set("token", createSessionToken(user));
       response.redirect(302, redirectUrl.toString());
     } catch (error) {
       next(error);

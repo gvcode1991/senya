@@ -15,10 +15,21 @@ const emptyAccountLookup = {
   password: "",
 };
 
+function createEmptyUserForm() {
+  return {
+    name: "",
+    email: "",
+    phone: "",
+    password: "",
+    acceptsMarketing: true,
+  };
+}
+
 const UserContext = createContext(null);
 
 export function UserProvider({ children }) {
-  const [userForm, setUserForm] = useState(emptyUserForm);
+  const [userForm, setUserForm] = useState(() => createEmptyUserForm());
+  const [registrationFormKey, setRegistrationFormKey] = useState(0);
   const [accountLookup, setAccountLookup] = useState(emptyAccountLookup);
   const [userAccount, setUserAccount] = useState(null);
   const [userToken, setUserToken] = useState(() => localStorage.getItem(storageKeys.userToken) || "");
@@ -46,11 +57,18 @@ export function UserProvider({ children }) {
     setUserStatus({ state: "idle", message: "" });
   }
 
+  function resetUserForm() {
+    setUserForm(createEmptyUserForm());
+    setRegistrationFormKey((currentKey) => currentKey + 1);
+  }
+
   const value = useMemo(() => ({
     accountLookup,
     emptyAccountLookup,
     emptyUserForm,
     logoutUser,
+    registrationFormKey,
+    resetUserForm,
     setAccountLookup,
     setUserAccount,
     setUserForm,
@@ -62,7 +80,7 @@ export function UserProvider({ children }) {
     userForm,
     userStatus,
     userToken,
-  }), [accountLookup, userAccount, userForm, userStatus, userToken]);
+  }), [accountLookup, registrationFormKey, userAccount, userForm, userStatus, userToken]);
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 }

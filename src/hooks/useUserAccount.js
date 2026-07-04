@@ -1,12 +1,13 @@
 import { orderMessages } from "../config/storeConfig";
 import { useUserContext } from "../contexts/UserContext";
-import { loginUser, registerUser, resendConfirmationEmail as resendConfirmationEmailRequest, updateFavorite, updatePreferences } from "../services/usersApi";
+import { getUserAccount, loginUser, registerUser, resendConfirmationEmail as resendConfirmationEmailRequest, updateFavorite, updatePreferences } from "../services/usersApi";
 
 export function useUserAccount({ navigateTo }) {
   const {
     accountLookup,
-    emptyUserForm,
     logoutUser,
+    registrationFormKey,
+    resetUserForm,
     setAccountLookup,
     setUserAccount,
     setUserForm,
@@ -38,7 +39,7 @@ export function useUserAccount({ navigateTo }) {
       setUserAccount(data.user);
       setUserToken(data.token || "");
       setAccountLookup({ email: data.user.email, password: "" });
-      setUserForm(emptyUserForm);
+      resetUserForm();
       const emailSent = Boolean(data.email?.sent);
       setUserStatus({
         state: emailSent ? "success" : "error",
@@ -105,6 +106,28 @@ export function useUserAccount({ navigateTo }) {
     }
   }
 
+  async function loadConfirmedAccount(email, token, syncCheckoutEmail) {
+    if (!email || !token) return;
+
+    setUserStatus({ state: "loading", message: "Activando cuenta..." });
+
+    try {
+      const { response, data } = await getUserAccount(email, { headers: { Authorization: `Bearer ${token}` } });
+
+      if (!response.ok) {
+        throw new Error(data.message || "No pudimos cargar la cuenta activada.");
+      }
+
+      setUserAccount(data.user);
+      setUserToken(token);
+      setAccountLookup({ email: data.user.email, password: "" });
+      syncCheckoutEmail?.(data.user.email);
+      setUserStatus({ state: "success", message: "Cuenta activada. Ya estas en tu panel." });
+    } catch (error) {
+      setUserStatus({ state: "error", message: `${error.message} Inicia sesion para actualizar tu panel.` });
+    }
+  }
+
   async function saveAccountPreferences(acceptsMarketing) {
     if (!userAccount?.email) return;
 
@@ -152,7 +175,9 @@ export function useUserAccount({ navigateTo }) {
     accountLookup,
     authHeaders,
     loadAccount,
+    loadConfirmedAccount,
     logoutUser,
+    registrationFormKey,
     saveAccountPreferences,
     resendConfirmationEmail,
     setUserAccount,
