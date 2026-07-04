@@ -67,7 +67,7 @@ export function useAdminProducts({ adminHeaders, adminUnlocked, loadProducts, se
       colors: (product.colors || []).join(", "),
       active: product.active ?? true,
     });
-    document.getElementById("admin")?.scrollIntoView({ behavior: "smooth" });
+    document.getElementById("admin-product-form")?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   async function submitProduct(event) {

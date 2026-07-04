@@ -59,7 +59,7 @@ export function Header({
 
         <div className="header-actions" aria-label="Accesos rapidos">
           {adminUnlocked && (
-            <a className="admin-order-action" href="/admin" aria-label="Pedidos para preparar" onClick={(event) => { event.preventDefault(); navigateTo("/admin"); }}>
+            <a className="admin-order-action" href="/admin#admin-orders" aria-label="Pedidos para preparar" onClick={(event) => { event.preventDefault(); navigateToSection("/admin", "admin-orders"); }}>
               <PackageCheck size={23} />
               <span>Pedidos</span>
               <strong>{adminOrdersCount}</strong>
@@ -78,7 +78,7 @@ export function Header({
         </button>
 
         {adminUnlocked && (
-          <button className="icon-action mobile-admin-orders" type="button" aria-label="Pedidos para preparar" onClick={() => navigateTo("/admin")}>
+          <button className="icon-action mobile-admin-orders" type="button" aria-label="Pedidos para preparar" onClick={() => navigateToSection("/admin", "admin-orders")}>
             <PackageCheck size={20} />
             <strong>{adminOrdersCount}</strong>
           </button>

@@ -601,6 +601,28 @@ h2 { margin-bottom: 0; font-size: clamp(1.9rem, 3.5vw, 3.15rem); font-weight: 82
   border-top: 1px solid var(--line);
   background: var(--body-warm);
 }
+.admin-unlock {
+  width: min(100%, 460px);
+}
+.admin-dashboard {
+  display: grid;
+  gap: 28px;
+}
+.admin-card-section {
+  display: grid;
+  gap: 14px;
+  scroll-margin-top: 120px;
+}
+.admin-section-title {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+}
+.admin-section-title h3 {
+  margin: 0;
+  font-size: clamp(1.3rem, 2.3vw, 1.8rem);
+}
 .secondary-admin-button {
   display: inline-flex;
   min-height: 44px;
@@ -621,7 +643,8 @@ h2 { margin-bottom: 0; font-size: clamp(1.9rem, 3.5vw, 3.15rem); font-weight: 82
   align-items: start;
 }
 .admin-form,
-.admin-products {
+.admin-products,
+.admin-orders {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--surface);
@@ -722,7 +745,7 @@ h2 { margin-bottom: 0; font-size: clamp(1.9rem, 3.5vw, 3.15rem); font-weight: 82
 .admin-orders {
   display: grid;
   gap: 14px;
-  margin-top: 24px;
+  padding: 16px;
 }
 .admin-orders-header {
   display: flex;
@@ -1839,6 +1862,10 @@ h2 { margin-bottom: 0; font-size: clamp(1.9rem, 3.5vw, 3.15rem); font-weight: 82
   .whatsapp-checkout {
     min-height: 40px;
     font-size: 0.9rem;
+  }
+  .admin-section-title {
+    align-items: flex-start;
+    flex-direction: column;
   }
   .admin-orders-header,
   .admin-order-top,

@@ -18,7 +18,7 @@ export function AdminOrdersList({ onUpdateOrderStatus, orders, ordersStatus, ref
   }
 
   return (
-    <section className="admin-orders">
+    <section className="admin-orders admin-card-section" id="admin-orders">
       <div className="admin-orders-header">
         <div>
           <h3>{adminContent.ordersTitle}</h3>

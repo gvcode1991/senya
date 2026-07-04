@@ -1,6 +1,6 @@
 import { productFallbackImages } from "./images";
 
-export const appVersion = "3.0.0";
+export const appVersion = "3.1.0";
 
 export const storageKeys = {
   cart: "senya-cart",
@@ -197,6 +197,9 @@ export const adminContent = {
   panelTitle: "Panel admin",
   panelNote: "Alta, baja y modificacion de productos del catalogo.",
   newProductButton: "Nuevo producto",
+  createProductTitle: "Nuevo producto",
+  editProductTitle: "Modificar producto",
+  productsTitle: "Catalogo cargado",
   accessTitle: "Acceso admin",
   emailLabel: "Email admin",
   emailPlaceholder: "admin@example.com",

@@ -16,7 +16,6 @@ export function ProductForm({
 }) {
   return (
     <form className="admin-form" onSubmit={submitProduct}>
-      <h3>{editingProductId ? "Editar producto" : "Agregar producto"}</h3>
       <div className="admin-grid">
         <label>
           Codigo
