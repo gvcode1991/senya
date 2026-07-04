@@ -10,7 +10,7 @@ Base profesional reutilizable para crear tiendas online con React y Express. El 
 - Registro e inicio de sesion de usuarios, favoritos, preferencias y compras guardadas.
 - Panel admin para ABM de productos.
 - Subida de imagenes de productos a Cloudinary desde el panel admin.
-- Emails transaccionales preparados con Resend.
+- Emails transaccionales preparados con Resend
 - Frontend responsive para mobile y desktop.
 - Configuracion centralizada de marca, navegacion, imagenes y textos para reutilizar la base en nuevas tiendas.
 
