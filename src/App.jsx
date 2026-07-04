@@ -256,18 +256,21 @@ function AppContent() {
         setMenuOpen={setMenuOpen}
         setQuery={setQuery}
         storeInfo={activeStoreInfo}
+        userAccount={userAccount}
       />
 
       <main id={isAdminRoute ? "admin" : isRegisterRoute ? "registro" : isAccountRoute ? "cuenta" : "inicio"}>
         {!isAdminRoute && !isRegisterRoute && !isAccountRoute && (
           <>
-        <Hero cssImageUrl={cssImageUrl} heroContent={activeHeroContent} images={storeImages} />
+        {!selectedProduct && <Hero cssImageUrl={cssImageUrl} heroContent={activeHeroContent} images={storeImages} />}
 
+        {!selectedProduct && (
         <section className="shipping-band" aria-label="Beneficio de envio">
           <div>
             {activeShippingTickerItems.map((item, index) => <span key={`${item}-${index}`}>{item}</span>)}
           </div>
         </section>
+        )}
 
         {selectedProduct && (
           <section className="product-detail" aria-label={`Detalle de ${selectedProduct.name}`}>

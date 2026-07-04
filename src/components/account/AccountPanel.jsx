@@ -57,14 +57,16 @@ export function AccountPanel({
           <p className="catalog-note">{accountContent.account.note}</p>
         </div>
       </div>
-      <div className="account-layout">
-        <form className="admin-form" onSubmit={loadAccount}>
-          <h3>{accountContent.account.loginTitle}</h3>
-          <label>{accountContent.account.emailLabel}<input value={accountLookup.email} onChange={(event) => updateAccountLookup("email", event.target.value)} type="email" required /></label>
-          <label>{accountContent.account.passwordLabel}<input value={accountLookup.password} onChange={(event) => updateAccountLookup("password", event.target.value)} type="password" required /></label>
-          <button className="checkout-button" type="submit">{accountContent.account.loginButton}</button>
-          {userStatus.message && <p className={`checkout-message ${userStatus.state}`}>{userStatus.message}</p>}
-        </form>
+      <div className={`account-layout${userAccount ? " is-authenticated" : ""}`}>
+        {!userAccount && (
+          <form className="admin-form" onSubmit={loadAccount}>
+            <h3>{accountContent.account.loginTitle}</h3>
+            <label>{accountContent.account.emailLabel}<input value={accountLookup.email} onChange={(event) => updateAccountLookup("email", event.target.value)} type="email" required /></label>
+            <label>{accountContent.account.passwordLabel}<input value={accountLookup.password} onChange={(event) => updateAccountLookup("password", event.target.value)} type="password" required /></label>
+            <button className="checkout-button" type="submit">{accountContent.account.loginButton}</button>
+            {userStatus.message && <p className={`checkout-message ${userStatus.state}`}>{userStatus.message}</p>}
+          </form>
+        )}
         <div className="account-summary">
           <h3>{userAccount ? userAccount.email : accountContent.account.emptyTitle}</h3>
           <p>{userAccount ? `Estado: ${userAccount.emailVerified ? accountContent.account.activeState : accountContent.account.pendingState}` : accountContent.account.emptyText}</p>

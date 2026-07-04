@@ -14,7 +14,10 @@ export function Header({
   setMenuOpen,
   setQuery,
   storeInfo,
+  userAccount,
 }) {
+  const hasActiveUser = Boolean(userAccount);
+
   return (
     <header className="site-header">
       <div className="header-main">
@@ -37,7 +40,7 @@ export function Header({
         </label>
 
         <div className="header-actions" aria-label="Accesos rapidos">
-          <a href="/cuenta" aria-label={headerActions.account} onClick={(event) => { event.preventDefault(); navigateTo("/cuenta"); }}><UserRound size={23} /><span>{headerActions.account}</span></a>
+          <a className={`account-action${hasActiveUser ? " is-active" : ""}`} href="/cuenta" aria-label={headerActions.account} onClick={(event) => { event.preventDefault(); navigateTo("/cuenta"); }}><UserRound size={23} /><span>{headerActions.account}</span></a>
           <button className="header-cart" type="button" aria-label="Abrir carrito" onClick={() => setCartOpen(true)}>
             <ShoppingBag size={24} />
             <span>{headerActions.cart}</span>
@@ -45,7 +48,7 @@ export function Header({
           </button>
         </div>
 
-        <button className="mobile-account-button" type="button" aria-label={headerActions.account} onClick={() => navigateTo("/cuenta")}>
+        <button className={`mobile-account-button${hasActiveUser ? " is-active" : ""}`} type="button" aria-label={headerActions.account} onClick={() => navigateTo("/cuenta")}>
           <UserRound size={20} />
         </button>
 
