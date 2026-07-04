@@ -18,7 +18,8 @@ const orderItemSchema = new mongoose.Schema(
 
 const orderSchema = new mongoose.Schema(
   {
-    status: { type: String, default: "pending", enum: ["pending", "confirmed", "delivered", "cancelled"] },
+    status: { type: String, default: "received", enum: ["received", "pending", "confirmed", "delivered", "cancelled", "rejected"] },
+    adminComment: { type: String, default: "" },
     customer: {
       name: { type: String, required: true },
       phone: { type: String, required: true },

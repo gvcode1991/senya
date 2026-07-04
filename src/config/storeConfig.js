@@ -1,6 +1,6 @@
 import { productFallbackImages } from "./images";
 
-export const appVersion = "2.0.0";
+export const appVersion = "3.0.0";
 
 export const storageKeys = {
   cart: "senya-cart",
@@ -173,10 +173,12 @@ export const accountContent = {
     favoritesLabel: "Favoritos",
     purchasesLabel: "Compras realizadas",
     orderStatusLabels: {
+      received: "Recibido",
       pending: "Pendiente",
       confirmed: "Confirmado",
       delivered: "Entregado",
       cancelled: "Cancelado",
+      rejected: "Rechazado",
     },
   },
 };
@@ -204,11 +206,18 @@ export const adminContent = {
   ordersTitle: "Pedidos recientes",
   ordersEmpty: "Todavia no hay pedidos.",
   ordersRefresh: "Actualizar pedidos",
+  ordersAccept: "Aceptar pedido",
+  ordersReject: "Rechazar pedido",
+  ordersRejectReason: "Motivo del rechazo",
+  ordersWhatsapp: "Coordinar por WhatsApp",
+  ordersEmail: "Enviar email",
   ordersStatusLabels: {
+    received: "Recibido",
     pending: "Pendiente",
     confirmed: "Confirmado",
     delivered: "Entregado",
     cancelled: "Cancelado",
+    rejected: "Rechazado",
   },
   product: {
     tagsPlaceholder: "Producto destacado, Categoria, Marca",

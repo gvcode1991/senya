@@ -1,10 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { adminContent } from "../../config/storeConfig";
 import { formatter } from "../../utils/formatters";
 
-export function AdminOrdersList({ orders, ordersStatus, refreshOrders }) {
+function buildCustomerWhatsApp(order) {
+  const phone = String(order.customer?.phone || "").replace(/[^\d]/g, "");
+  const text = encodeURIComponent(`Hola ${order.customer?.name || ""}, te escribimos de Senya por tu pedido ${order.id}.`);
+  return phone ? `https://wa.me/${phone}?text=${text}` : "";
+}
+
+export function AdminOrdersList({ onUpdateOrderStatus, orders, ordersStatus, refreshOrders }) {
   const statusLabels = adminContent.ordersStatusLabels;
+  const [rejectReasons, setRejectReasons] = useState({});
+
+  function updateRejectReason(orderId, value) {
+    setRejectReasons((currentReasons) => ({ ...currentReasons, [orderId]: value }));
+  }
 
   return (
     <section className="admin-orders">
@@ -44,6 +55,30 @@ export function AdminOrdersList({ orders, ordersStatus, refreshOrders }) {
             <span>{order.createdAt ? new Date(order.createdAt).toLocaleString("es-AR") : "Pedido nuevo"}</span>
             <strong>{formatter.format(order.total || 0)}</strong>
           </div>
+
+          {order.adminComment && <p className="admin-order-comment">{order.adminComment}</p>}
+
+          <div className="admin-order-contact">
+            {buildCustomerWhatsApp(order) && <a href={buildCustomerWhatsApp(order)} target="_blank" rel="noreferrer">{adminContent.ordersWhatsapp}</a>}
+            {order.customer?.email && <a href={`mailto:${order.customer.email}`}>{adminContent.ordersEmail}</a>}
+          </div>
+
+          {order.status !== "rejected" && (
+            <div className="admin-order-actions">
+              {order.status === "received" && (
+                <button className="secondary-admin-button" type="button" onClick={() => onUpdateOrderStatus(order.id, "pending")}>
+                  {adminContent.ordersAccept}
+                </button>
+              )}
+              <label>
+                {adminContent.ordersRejectReason}
+                <textarea value={rejectReasons[order.id] || ""} onChange={(event) => updateRejectReason(order.id, event.target.value)} rows="2" />
+              </label>
+              <button className="secondary-admin-button danger" type="button" onClick={() => onUpdateOrderStatus(order.id, "rejected", rejectReasons[order.id] || "")}>
+                {adminContent.ordersReject}
+              </button>
+            </div>
+          )}
         </article>
       )) : <p className="empty-state">{adminContent.ordersEmpty}</p>}
     </section>

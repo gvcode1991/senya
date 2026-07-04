@@ -5,7 +5,7 @@ import multer from "multer";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { createOrder, listOrders } from "./services/ordersService.js";
+import { createOrder, listOrders, updateOrderStatus } from "./services/ordersService.js";
 import { createProduct, decrementProductStock, deleteProduct, getAvailableStock, getProductById, listProducts, updateProduct } from "./services/productsService.js";
 import { uploadProductImage, isCloudinaryConfigured, verifyCloudinaryConnection } from "./services/cloudinaryService.js";
 import { sendAccountConfirmationEmail, isEmailConfigured, verifyEmailConnection } from "./services/emailService.js";
@@ -305,6 +305,21 @@ export function createApp() {
     }
   });
 
+  app.put("/api/orders/:id/status", requireAdmin, async (request, response, next) => {
+    try {
+      const order = await updateOrderStatus(request.params.id, request.body.status, request.body.adminComment);
+
+      if (!order) {
+        response.status(404).json({ message: "Pedido no encontrado." });
+        return;
+      }
+
+      response.json({ order });
+    } catch (error) {
+      next(error);
+    }
+  });
+
   app.get("/api/users/confirm/:token", async (request, response, next) => {
     try {
       const user = await confirmUserEmail(request.params.token);
@@ -538,6 +553,8 @@ export function createApp() {
       error.name === "ValidationError" ||
       error.message.includes("obligatorios") ||
       error.message.includes("Ya existe") ||
+      error.message.includes("Estado de pedido") ||
+      error.message.includes("motivo") ||
       error.message.includes("Cloudinary") ||
       error.message.includes("imagen")
     ) {

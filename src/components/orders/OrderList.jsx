@@ -14,6 +14,7 @@ export function OrderList({ purchases }) {
             <strong>{formatter.format(purchase.total || 0)}</strong>
             <small>{statusLabels[purchase.status] || purchase.status || statusLabels.pending}</small>
           </div>
+          {purchase.adminComment && <p className="purchase-comment">{purchase.adminComment}</p>}
           <div className="purchase-items">
             {(purchase.items || []).map((item) => (
               <div className="purchase-item" key={`${purchase.id || purchase._id}-${item.id}-${item.size}-${item.color}`}>

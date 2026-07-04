@@ -1,7 +1,9 @@
 import React from "react";
-import { Menu, Search, ShoppingBag, UserRound } from "lucide-react";
+import { Menu, PackageCheck, Search, ShoppingBag, UserRound } from "lucide-react";
 
 export function Header({
+  adminOrdersCount,
+  adminUnlocked,
   cartQuantity,
   headerActions,
   storeLogo,
@@ -35,7 +37,7 @@ export function Header({
   };
 
   return (
-    <header className="site-header">
+    <header className={`site-header${adminUnlocked ? " has-admin-orders" : ""}`}>
       <div className="header-main">
         <button className="icon-action menu-button" type="button" aria-label="Abrir menu" onClick={() => setMenuOpen(true)}>
           <Menu size={25} />
@@ -56,6 +58,13 @@ export function Header({
         </label>
 
         <div className="header-actions" aria-label="Accesos rapidos">
+          {adminUnlocked && (
+            <a className="admin-order-action" href="/admin" aria-label="Pedidos para preparar" onClick={(event) => { event.preventDefault(); navigateTo("/admin"); }}>
+              <PackageCheck size={23} />
+              <span>Pedidos</span>
+              <strong>{adminOrdersCount}</strong>
+            </a>
+          )}
           <a className={`account-action${hasActiveUser ? " is-active" : ""}`} href="/cuenta" aria-label={headerActions.account} onClick={(event) => { event.preventDefault(); navigateTo("/cuenta"); }}><UserRound size={23} /><span>{headerActions.account}</span></a>
           <button className="header-cart" type="button" aria-label="Abrir carrito" onClick={() => setCartOpen(true)}>
             <ShoppingBag size={24} />
@@ -67,6 +76,13 @@ export function Header({
         <button className={`mobile-account-button${hasActiveUser ? " is-active" : ""}`} type="button" aria-label={headerActions.account} onClick={() => navigateTo("/cuenta")}>
           <UserRound size={20} />
         </button>
+
+        {adminUnlocked && (
+          <button className="icon-action mobile-admin-orders" type="button" aria-label="Pedidos para preparar" onClick={() => navigateTo("/admin")}>
+            <PackageCheck size={20} />
+            <strong>{adminOrdersCount}</strong>
+          </button>
+        )}
 
         <button className="icon-action cart-button" type="button" aria-label="Abrir carrito" onClick={() => setCartOpen(true)}>
           <ShoppingBag size={20} />

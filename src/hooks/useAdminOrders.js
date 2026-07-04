@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { listOrders } from "../services/ordersApi";
+import { listOrders, updateOrderStatus } from "../services/ordersApi";
 
 export function useAdminOrders({ adminHeaders, adminUnlocked }) {
   const [adminOrders, setAdminOrders] = useState([]);
@@ -25,9 +25,27 @@ export function useAdminOrders({ adminHeaders, adminUnlocked }) {
     }
   }
 
+  async function changeOrderStatus(orderId, status, adminComment = "") {
+    setAdminOrdersStatus({ state: "loading", message: "Actualizando pedido..." });
+
+    try {
+      const { response, data } = await updateOrderStatus(orderId, { status, adminComment }, { headers: adminHeaders() });
+
+      if (!response.ok) {
+        throw new Error(data.message || "No pudimos actualizar el pedido.");
+      }
+
+      setAdminOrders((currentOrders) => currentOrders.map((order) => (order.id === data.order.id ? data.order : order)));
+      setAdminOrdersStatus({ state: "success", message: "Pedido actualizado." });
+    } catch (error) {
+      setAdminOrdersStatus({ state: "error", message: error.message });
+    }
+  }
+
   return {
     adminOrders,
     adminOrdersStatus,
+    changeOrderStatus,
     loadAdminOrders,
   };
 }

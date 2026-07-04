@@ -97,7 +97,7 @@ function AppContent() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("Todos");
   const { activeProducts, carouselProducts, catalogStatus, loadProducts, products, visibleProducts } = useProducts({ category, query });
-  const { adminOrders, adminOrdersStatus, loadAdminOrders } = useAdminOrders({ adminHeaders, adminUnlocked });
+  const { adminOrders, adminOrdersStatus, changeOrderStatus, loadAdminOrders } = useAdminOrders({ adminHeaders, adminUnlocked });
   const {
     appendProductImage,
     editingProductId,
@@ -148,6 +148,7 @@ function AppContent() {
   );
 
   const cartQuantity = cartLines.reduce((sum, item) => sum + item.quantity, 0);
+  const adminOrdersCount = adminOrders.filter((order) => ["received", "pending"].includes(order.status)).length;
   const {
     accountLookup,
     confirmAccountFromToken,
@@ -287,6 +288,8 @@ function AppContent() {
   return (
     <>
       <Header
+        adminOrdersCount={adminOrdersCount}
+        adminUnlocked={adminUnlocked}
         cartQuantity={cartQuantity}
         headerActions={activeHeaderActions}
         storeLogo={storeLogo}
@@ -414,6 +417,7 @@ function AppContent() {
             editingProductId={editingProductId}
             editProduct={editProduct}
             imageUpload={imageUpload}
+            onUpdateOrderStatus={changeOrderStatus}
             productForm={productForm}
             products={products}
             refreshOrders={loadAdminOrders}

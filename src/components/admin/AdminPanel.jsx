@@ -13,6 +13,7 @@ export function AdminPanel({
   editingProductId,
   editProduct,
   imageUpload,
+  onUpdateOrderStatus,
   productForm,
   products,
   refreshOrders,
@@ -72,6 +73,7 @@ export function AdminPanel({
 
       {adminUnlocked && (
         <AdminOrdersList
+          onUpdateOrderStatus={onUpdateOrderStatus}
           orders={adminOrders}
           ordersStatus={adminOrdersStatus}
           refreshOrders={refreshOrders}
