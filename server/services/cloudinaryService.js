@@ -3,7 +3,7 @@ import { v2 as cloudinary } from "cloudinary";
 import { getCloudinaryFolder } from "../config/storeConfig.js";
 
 export function isCloudinaryConfigured() {
-  return hasSplitCloudinaryCredentials() || Boolean(process.env.CLOUDINARY_URL);
+  return hasSplitCloudinaryCredentials() || Boolean(process.env.CLOUDINARY_URL) || hasUnsignedUploadConfig();
 }
 
 function configureCloudinary() {
@@ -56,6 +56,7 @@ function getSafeCloudinaryConfig(source) {
     cloudName: splitCredentials?.cloud_name || "from-cloudinary-url",
     apiKey: apiKey ? `...${apiKey.slice(-4)}` : "",
     folder: getCloudinaryFolder(),
+    hasUploadPreset: hasUnsignedUploadConfig(),
   };
 }
 
@@ -110,6 +111,10 @@ export async function uploadProductImage(file) {
       resource_type: "image",
     });
   } catch (error) {
+    if (hasUnsignedUploadConfig()) {
+      return uploadUnsignedProductImage(file, getCloudinaryErrorMessage(error));
+    }
+
     throw new Error(`Cloudinary no pudo subir la imagen: ${getCloudinaryErrorMessage(error)}`);
   }
 
@@ -119,6 +124,52 @@ export async function uploadProductImage(file) {
     width: result.width,
     height: result.height,
   };
+}
+
+async function uploadUnsignedProductImage(file, signedUploadError) {
+  const cloudName = getUnsignedCloudName();
+  const uploadPreset = normalizeCredential(process.env.CLOUDINARY_UPLOAD_PRESET);
+  const formData = new FormData();
+  const imageBlob = new Blob([file.buffer], { type: file.mimetype });
+
+  formData.append("file", imageBlob, file.originalname || "product-image");
+  formData.append("upload_preset", uploadPreset);
+  formData.append("folder", getCloudinaryFolder());
+
+  const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+    method: "POST",
+    body: formData,
+    signal: AbortSignal.timeout(20000),
+  });
+  const data = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    const unsignedError = data.error?.message || data.message || "Cloudinary no pudo subir la imagen con preset unsigned.";
+    throw new Error(`Cloudinary no pudo subir la imagen. Firma: ${signedUploadError}. Preset unsigned: ${unsignedError}`);
+  }
+
+  return {
+    url: data.secure_url,
+    publicId: data.public_id,
+    provider: "cloudinary-unsigned",
+    warning: signedUploadError ? `La subida firmada fallo (${signedUploadError}) y se uso preset unsigned.` : "",
+    width: data.width,
+    height: data.height,
+  };
+}
+
+function hasUnsignedUploadConfig() {
+  return Boolean(getUnsignedCloudName() && normalizeCredential(process.env.CLOUDINARY_UPLOAD_PRESET));
+}
+
+function getUnsignedCloudName() {
+  return normalizeCredential(process.env.CLOUDINARY_CLOUD_NAME) || getCloudNameFromCloudinaryUrl();
+}
+
+function getCloudNameFromCloudinaryUrl() {
+  const cloudinaryUrl = String(process.env.CLOUDINARY_URL || "");
+  const match = cloudinaryUrl.match(/@([^/?#]+)/);
+  return match ? normalizeCredential(match[1]) : "";
 }
 
 function uploadImageBuffer(buffer, options) {
