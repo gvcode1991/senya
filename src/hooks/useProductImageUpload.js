@@ -54,7 +54,7 @@ export function useProductImageUpload({ adminHeaders, adminUnlocked, appendProdu
       setImageUpload((currentUpload) => ({
         ...currentUpload,
         status: "success",
-        message: data.image.warning ? `Imagen subida a Cloudinary. ${data.image.warning}` : "Imagen subida y URL cargada.",
+        message: "Imagen subida a Cloudinary y URL cargada.",
       }));
     } catch (error) {
       setImageUpload((currentUpload) => ({ ...currentUpload, status: "error", message: `${error.message} Revisa Cloudinary en Render.` }));

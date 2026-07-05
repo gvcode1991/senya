@@ -152,7 +152,7 @@ async function uploadUnsignedProductImage(file, signedUploadError) {
     url: data.secure_url,
     publicId: data.public_id,
     provider: "cloudinary-unsigned",
-    warning: signedUploadError ? `La subida firmada fallo (${signedUploadError}) y se uso preset unsigned.` : "",
+    signedUploadError,
     width: data.width,
     height: data.height,
   };
