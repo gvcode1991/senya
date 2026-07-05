@@ -19,9 +19,9 @@ function configureCloudinary() {
 }
 
 function getSplitCloudinaryCredentials() {
-  const cloudName = String(process.env.CLOUDINARY_CLOUD_NAME || "").trim();
-  const apiKey = String(process.env.CLOUDINARY_API_KEY || "").trim();
-  const apiSecret = String(process.env.CLOUDINARY_API_SECRET || "").trim();
+  const cloudName = normalizeCredential(process.env.CLOUDINARY_CLOUD_NAME);
+  const apiKey = normalizeCredential(process.env.CLOUDINARY_API_KEY);
+  const apiSecret = normalizeCredential(process.env.CLOUDINARY_API_SECRET);
 
   if (!cloudName || !apiKey || !apiSecret) {
     return null;
@@ -33,6 +33,13 @@ function getSplitCloudinaryCredentials() {
     api_secret: apiSecret,
     secure: true,
   };
+}
+
+function normalizeCredential(value) {
+  return String(value || "")
+    .trim()
+    .replace(/^["']|["']$/g, "")
+    .replace(/[\u200B-\u200D\uFEFF\r\n\t ]/g, "");
 }
 
 function hasSplitCloudinaryCredentials() {
@@ -95,17 +102,12 @@ export async function uploadProductImage(file) {
 
   configureCloudinary();
 
-  const dataUri = `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
   let result;
 
   try {
-    result = await cloudinary.uploader.upload(dataUri, {
+    result = await uploadImageBuffer(file.buffer, {
       folder: getCloudinaryFolder(),
       resource_type: "image",
-      transformation: [
-        { width: 1200, height: 1200, crop: "limit" },
-        { quality: "auto", fetch_format: "auto" },
-      ],
     });
   } catch (error) {
     throw new Error(`Cloudinary no pudo subir la imagen: ${getCloudinaryErrorMessage(error)}`);
@@ -117,4 +119,19 @@ export async function uploadProductImage(file) {
     width: result.width,
     height: result.height,
   };
+}
+
+function uploadImageBuffer(buffer, options) {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(options, (error, result) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+
+      resolve(result);
+    });
+
+    stream.end(buffer);
+  });
 }
